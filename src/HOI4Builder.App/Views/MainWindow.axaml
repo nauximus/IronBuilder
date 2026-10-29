@@ -16,12 +16,17 @@
     <DockPanel>
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="_File">
-                <MenuItem Header="_New" IsEnabled="False" />
-                <MenuItem Header="_Open..." IsEnabled="False" />
+                <MenuItem Header="_New mod..." Click="OnNewMod" />
+                <MenuItem Header="_Import mod folder..." IsEnabled="False" />
+                <MenuItem Header="_Open project..." IsEnabled="False" />
+                <Separator />
                 <MenuItem Header="_Save" IsEnabled="False" />
                 <MenuItem Header="Save _as..." IsEnabled="False" />
-                <Separator />
                 <MenuItem Header="_Export mod" IsEnabled="False" />
+                <Separator />
+                <MenuItem Header="_Close project"
+                          Command="{Binding CloseProjectCommand}"
+                          IsEnabled="{Binding HasProject}" />
             </MenuItem>
             <MenuItem Header="_Edit">
                 <MenuItem Header="_Undo" Command="{Binding UndoCommand}" InputGesture="Ctrl+Z" />
@@ -38,6 +43,7 @@
 
         <ListBox DockPanel.Dock="Left"
                  Width="200"
+                 IsEnabled="{Binding HasProject}"
                  ItemsSource="{Binding Editors}"
                  SelectedItem="{Binding SelectedEditor}">
             <ListBox.ItemTemplate>
@@ -47,6 +53,29 @@
             </ListBox.ItemTemplate>
         </ListBox>
 
-        <ContentControl Content="{Binding SelectedEditor.ViewModel}" />
+        <Grid>
+            <ContentControl Content="{Binding SelectedEditor.ViewModel}"
+                            IsVisible="{Binding HasProject}" />
+
+            <StackPanel IsVisible="{Binding ShowStartScreen}"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Spacing="10"
+                        Width="280">
+                <TextBlock Text="HOI4Builder" FontSize="30" HorizontalAlignment="Center" />
+                <TextBlock Text="Start a new mod or continue an existing one."
+                           Opacity="0.7"
+                           TextWrapping="Wrap"
+                           TextAlignment="Center"
+                           HorizontalAlignment="Center"
+                           Margin="0,0,0,12" />
+                <Button Content="New mod..." Click="OnNewMod" HorizontalAlignment="Stretch" />
+                <Button Content="Import mod folder..." IsEnabled="False" HorizontalAlignment="Stretch" />
+                <Button Content="Open project..." IsEnabled="False" HorizontalAlignment="Stretch" />
+                <Button Content="Load sample project"
+                        Command="{Binding LoadSampleProjectCommand}"
+                        HorizontalAlignment="Stretch" />
+            </StackPanel>
+        </Grid>
     </DockPanel>
 </Window>

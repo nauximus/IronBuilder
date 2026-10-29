@@ -1,0 +1,58 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:HOI4Builder.App.ViewModels"
+        x:Class="HOI4Builder.App.Views.NewModDialog"
+        x:DataType="vm:NewModDialogViewModel"
+        Title="New Mod"
+        Width="520"
+        SizeToContent="Height"
+        CanResize="False"
+        WindowStartupLocation="CenterOwner">
+
+    <StackPanel Margin="20" Spacing="14">
+
+        <StackPanel Spacing="4">
+            <TextBlock Text="Mod name" />
+            <TextBox Text="{Binding Name}" />
+        </StackPanel>
+
+        <StackPanel Spacing="4">
+            <TextBlock Text="Mod id" />
+            <TextBox Text="{Binding ModId}" />
+            <TextBlock Text="{Binding ModIdError}"
+                        IsVisible="{Binding HasModIdError}"
+                        Foreground="#e5534b"
+                        TextWrapping="Wrap" />
+            <TextBlock Text="Used for the mod's folder and file names. Generated from the name until edited manually."
+                        Opacity="0.6"
+                        TextWrapping="Wrap" />
+        </StackPanel>
+        <StackPanel Spacing="4">
+            <TextBlock Text="Game version" />
+            <TextBox Text="{Binding GameVersion}" />
+            <TextBlock Text="Written to the mod's descriptor as the supported version. Match it to your HOI4 install."
+                        Opacity="0.6"
+                        TextWrapping="Wrap" />
+        </StackPanel>
+        <StackPanel Spacing="4">
+            <TextBlock Text="Export folder (Optional)" />
+            <Grid ColumnDefinitions="*,Auto">
+                <TextBox Grid.Column="0" Text="{Binding ExportFolder}" />
+                <Button Grid.Column="1" Content="Browse" Margin="8,0,0,0" Click="OnBrowse" />
+            </Grid> 
+        </StackPanel>
+
+        <TextBlock Text="{Binding ErrorText}"
+                IsVisible="{Binding HasErrorText}"
+                Foreground="#e5534b"
+                TextWrapping="Wrap" />
+            
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
+            <Button Content="Cancel" Click="OnCancel" />
+            <Button Content="Create" 
+                        IsDefault="True"
+                        IsEnabled="{Binding CanCreate}"
+                        Click="OnCreate" />
+        </StackPanel>
+    </StackPanel>
+</Window>

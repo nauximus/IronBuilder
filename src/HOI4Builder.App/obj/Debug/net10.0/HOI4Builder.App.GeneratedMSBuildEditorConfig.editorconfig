@@ -9,7 +9,7 @@ build_property.AvaloniaNameGeneratorAttachDevTools = true
 build_property.AvaloniaUseCompiledBindingsByDefault = true
 build_property.AvaloniaMainPackageVersion = 12.1.4
 build_property.AvaloniaPreviewerNetCoreToolPath = /home/naux/.nuget/packages/avalonia/12.1.4/buildTransitive//../tools/net8.0/designer/Avalonia.Designer.HostApp.dll
-build_property.AvaloniaResourcePaths = /mnt/Depo/HOI4ModBuilder/src/HOI4Builder.App/Assets/avalonia-logo.ico,/mnt/Depo/HOI4ModBuilder/src/HOI4Builder.App/App.axaml,/mnt/Depo/HOI4ModBuilder/src/HOI4Builder.App/Views/FocusEditorView.axaml,/mnt/Depo/HOI4ModBuilder/src/HOI4Builder.App/Views/MainWindow.axaml,/mnt/Depo/HOI4ModBuilder/src/HOI4Builder.App/Views/PlaceholderEditorView.axaml
+build_property.AvaloniaResourcePaths = /mnt/Depo/HOI4ModBuilder/src/HOI4Builder.App/Assets/avalonia-logo.ico,/mnt/Depo/HOI4ModBuilder/src/HOI4Builder.App/App.axaml,/mnt/Depo/HOI4ModBuilder/src/HOI4Builder.App/Views/FocusEditorView.axaml,/mnt/Depo/HOI4ModBuilder/src/HOI4Builder.App/Views/MainWindow.axaml,/mnt/Depo/HOI4ModBuilder/src/HOI4Builder.App/Views/NewModDialog.axaml,/mnt/Depo/HOI4ModBuilder/src/HOI4Builder.App/Views/PlaceholderEditorView.axaml
 build_property.MvvmToolkitEnableINotifyPropertyChangingSupport = true
 build_property._MvvmToolkitIsUsingWindowsRuntimePack = false
 build_property.CsWinRTComponent = 
@@ -39,6 +39,9 @@ build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 
 [/mnt/Depo/HOI4ModBuilder/src/HOI4Builder.App/Views/MainWindow.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[/mnt/Depo/HOI4ModBuilder/src/HOI4Builder.App/Views/NewModDialog.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 
 [/mnt/Depo/HOI4ModBuilder/src/HOI4Builder.App/Views/PlaceholderEditorView.axaml]
