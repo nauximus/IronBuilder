@@ -1,0 +1,9 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/HOI4Builder.App/HOI4Builder.App.csproj" />
+    <Project Path="src/HOI4Builder.Core/HOI4Builder.Core.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/HOI4Builder.Core.Tests/HOI4Builder.Core.Tests.csproj" />
+  </Folder>
+</Solution>

@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "/9GnBxv+H/c=",
+  "success": true,
+  "projectFilePath": "/mnt/Depo/HOI4ModBuilder/src/HOI4Builder.Core/HOI4Builder.Core.csproj",
+  "expectedPackageFiles": [
+    "/home/naux/.nuget/packages/microsoft.aspnetcore.app.ref/10.0.13/microsoft.aspnetcore.app.ref.10.0.13.nupkg.sha512"
+  ],
+  "logs": []
+}
