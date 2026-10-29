@@ -97,3 +97,4 @@
 /mnt/Depo/HOI4ModBuilder/tests/HOI4Builder.Core.Tests/obj/Debug/net10.0/HOI4Builder.Core.Tests.pdb
 /mnt/Depo/HOI4ModBuilder/tests/HOI4Builder.Core.Tests/obj/Debug/net10.0/HOI4Builder.Core.Tests.genruntimeconfig.cache
 /mnt/Depo/HOI4ModBuilder/tests/HOI4Builder.Core.Tests/obj/Debug/net10.0/ref/HOI4Builder.Core.Tests.dll
+/mnt/Depo/HOI4ModBuilder/tests/HOI4Builder.Core.Tests/obj/Debug/net10.0/HOI4Builder.Core.Tests.sourcelink.json

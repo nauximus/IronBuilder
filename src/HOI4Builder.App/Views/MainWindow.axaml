@@ -1,20 +1,52 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:HOI4Builder.App.ViewModels"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:views="using:HOI4Builder.App.Views"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="HOI4Builder.App.Views.MainWindow"
         x:DataType="vm:MainViewModel"
+        Width="1280" Height="800"
         Icon="/Assets/avalonia-logo.ico"
-        Title="HOI4Builder.App">
+        Title="HOI4Builder">
 
-    <Design.DataContext>
-        <!-- This only sets the DataContext for the previewer in an IDE,
-             to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
-        <vm:MainViewModel />
-    </Design.DataContext>
-    <views:FocusCanvas x:Name="FocusView" />
+    <Window.KeyBindings>
+        <KeyBinding Gesture="Ctrl+Z" Command="{Binding UndoCommand}" />
+        <KeyBinding Gesture="Ctrl+Y" Command="{Binding RedoCommand}" />
+        <KeyBinding Gesture="Ctrl+Shift+Z" Command="{Binding RedoCommand}" />
+    </Window.KeyBindings>
 
+    <DockPanel>
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="_File">
+                <MenuItem Header="_New" IsEnabled="False" />
+                <MenuItem Header="_Open..." IsEnabled="False" />
+                <MenuItem Header="_Save" IsEnabled="False" />
+                <MenuItem Header="Save _as..." IsEnabled="False" />
+                <Separator />
+                <MenuItem Header="_Export mod" IsEnabled="False" />
+            </MenuItem>
+            <MenuItem Header="_Edit">
+                <MenuItem Header="_Undo" Command="{Binding UndoCommand}" InputGesture="Ctrl+Z" />
+                <MenuItem Header="_Redo" Command="{Binding RedoCommand}" InputGesture="Ctrl+Y" />
+            </MenuItem>
+            <MenuItem Header="_Tools">
+                <MenuItem Header="_Validate" IsEnabled="False" />
+            </MenuItem>
+        </Menu>
+
+        <Border DockPanel.Dock="Bottom" Padding="10,4">
+            <TextBlock Text="{Binding StatusText}" />
+        </Border>
+
+        <ListBox DockPanel.Dock="Left"
+                 Width="200"
+                 ItemsSource="{Binding Editors}"
+                 SelectedItem="{Binding SelectedEditor}">
+            <ListBox.ItemTemplate>
+                <DataTemplate x:DataType="vm:EditorEntry">
+                    <TextBlock Text="{Binding Title}" Margin="6,4" />
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+
+        <ContentControl Content="{Binding SelectedEditor.ViewModel}" />
+    </DockPanel>
 </Window>

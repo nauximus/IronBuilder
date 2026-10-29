@@ -1,0 +1,9 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:HOI4Builder.App.ViewModels"
+             x:Class="HOI4Builder.App.Views.PlaceholderEditorView"
+             x:DataType="vm:PlaceholderEditorViewModel">
+    <TextBlock Text="{Binding Message}"
+               HorizontalAlignment="Center"
+               VerticalAlignment="Center" />
+</UserControl>

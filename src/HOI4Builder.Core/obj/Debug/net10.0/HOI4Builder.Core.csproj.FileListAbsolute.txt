@@ -9,3 +9,4 @@
 /mnt/Depo/HOI4ModBuilder/src/HOI4Builder.Core/obj/Debug/net10.0/refint/HOI4Builder.Core.dll
 /mnt/Depo/HOI4ModBuilder/src/HOI4Builder.Core/obj/Debug/net10.0/HOI4Builder.Core.pdb
 /mnt/Depo/HOI4ModBuilder/src/HOI4Builder.Core/obj/Debug/net10.0/ref/HOI4Builder.Core.dll
+/mnt/Depo/HOI4ModBuilder/src/HOI4Builder.Core/obj/Debug/net10.0/HOI4Builder.Core.sourcelink.json
