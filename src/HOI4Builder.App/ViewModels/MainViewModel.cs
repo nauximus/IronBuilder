@@ -1,3 +1,4 @@
+using System.IO;
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -14,6 +15,8 @@ public partial class MainViewModel : ViewModelBase
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(HasProject))]
     [NotifyPropertyChangedFor(nameof(ShowStartScreen))]
+    [NotifyPropertyChangedFor(nameof(WindowTitle))]
+    [NotifyPropertyChangedFor(nameof(HasUnsavedChanges))]
     private ModProject? _project;
 
     [ObservableProperty]
@@ -23,6 +26,22 @@ public partial class MainViewModel : ViewModelBase
     private string _statusText = "No project open";
 
     public bool HasProject => Project != null;
+    public bool HasUnsavedChanges =>
+        Project != null && (Project.History.IsDirty || Project.FilePath == null);
+    
+    public string WindowTitle => Project is null
+        ? "IronBuilder"
+        : $"{Project.Name}{(HasUnsavedChanges ? " *" : "")} - IronBuilder";
+
+    public void Save(string path)
+    {
+        if (Project is null)
+            return;
+    
+        ProjectFile.Save(Project, path);
+        Project.History.MarkSaved();
+        StatusText = $"Saved {Path.GetFileName(path)}";
+    }
 
     public bool ShowStartScreen => Project == null;
 
@@ -81,6 +100,9 @@ public partial class MainViewModel : ViewModelBase
         UndoCommand.NotifyCanExecuteChanged();
         RedoCommand.NotifyCanExecuteChanged();
         StatusText = Project?.History.UndoDescription is { } next ? $"Next undo: {next}" : "Ready";
+
+        OnPropertyChanged(nameof(HasUnsavedChanges));
+        OnPropertyChanged(nameof(WindowTitle));
     }
 
     private static ModProject CreateDemoProject()

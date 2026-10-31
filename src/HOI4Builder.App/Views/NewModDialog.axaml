@@ -13,12 +13,12 @@
 
         <StackPanel Spacing="4">
             <TextBlock Text="Mod name" />
-            <TextBox Text="{Binding Name}" />
+            <TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" />
         </StackPanel>
 
         <StackPanel Spacing="4">
             <TextBlock Text="Mod id" />
-            <TextBox Text="{Binding ModId}" />
+            <TextBox Text="{Binding ModId, UpdateSourceTrigger=PropertyChanged}" />
             <TextBlock Text="{Binding ModIdError}"
                         IsVisible="{Binding HasModIdError}"
                         Foreground="#e5534b"

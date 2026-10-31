@@ -86,10 +86,10 @@
 /mnt/Depo/HOI4ModBuilder/src/HOI4Builder.App/obj/Debug/net10.0/HOI4Builder.App.AssemblyInfoInputs.cache
 /mnt/Depo/HOI4ModBuilder/src/HOI4Builder.App/obj/Debug/net10.0/HOI4Builder.App.AssemblyInfo.cs
 /mnt/Depo/HOI4ModBuilder/src/HOI4Builder.App/obj/Debug/net10.0/HOI4Builder.App.csproj.CoreCompileInputs.cache
+/mnt/Depo/HOI4ModBuilder/src/HOI4Builder.App/obj/Debug/net10.0/HOI4Builder.App.sourcelink.json
 /mnt/Depo/HOI4ModBuilder/src/HOI4Builder.App/obj/Debug/net10.0/HOI4Buil.DE97F12D.Up2Date
 /mnt/Depo/HOI4ModBuilder/src/HOI4Builder.App/obj/Debug/net10.0/HOI4Builder.App.dll
 /mnt/Depo/HOI4ModBuilder/src/HOI4Builder.App/obj/Debug/net10.0/refint/HOI4Builder.App.dll
 /mnt/Depo/HOI4ModBuilder/src/HOI4Builder.App/obj/Debug/net10.0/HOI4Builder.App.pdb
 /mnt/Depo/HOI4ModBuilder/src/HOI4Builder.App/obj/Debug/net10.0/HOI4Builder.App.genruntimeconfig.cache
 /mnt/Depo/HOI4ModBuilder/src/HOI4Builder.App/obj/Debug/net10.0/ref/HOI4Builder.App.dll
-/mnt/Depo/HOI4ModBuilder/src/HOI4Builder.App/obj/Debug/net10.0/HOI4Builder.App.sourcelink.json

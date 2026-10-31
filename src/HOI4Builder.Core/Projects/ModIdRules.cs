@@ -31,7 +31,7 @@ public static class ModIdRules
 
             char lower = char.ToLowerInvariant(mapped);
 
-            if (lower is >= 'a' and 'z' or >= '0' and <= '9')
+            if (lower is >= 'a' and <= 'z' or >= '0' and <= '9')
                 sb.Append(lower);
             else if (sb.Length > 0 && sb[^1] != '_')
                 sb.Append('_');

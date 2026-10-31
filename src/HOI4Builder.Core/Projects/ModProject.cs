@@ -11,6 +11,10 @@ public sealed class ModProject
     public string ModId { get; set; } = "my_hoi4_mod";
     public string GameVersion { get; set; } = DefaultGameVersion;
     public string? ExportFolder { get; set; }
+    public string? FilePath { get; set; }
+    public string? ModVersion { get; set; }
+    public string? ImportFromFolder { get; set; }
+    public List<string> Tags { get; } = new();
 
     public List<FocusTree> FocusTrees { get; } = new();
 

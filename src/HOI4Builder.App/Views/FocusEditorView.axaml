@@ -1,8 +1,22 @@
-<UserControl xmlns="https://github.com/avalonui"
+<UserControl xmlns="https://github.com/avaloniaui"
             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
             xmlns:views="using:HOI4Builder.App.Views"
             xmlns:vm="using:HOI4Builder.App.ViewModels"
+            xmlns:focuses="using:HOI4Builder.Core.Focuses"
             x:Class="HOI4Builder.App.Views.FocusEditorView"
             x:DataType="vm:FocusEditorViewModel">
-    <views:FocusCanvas x:Name="Surface" />
+    <DockPanel>
+        <Border DockPanel.Dock="Top" Padding="8">
+            <ComboBox ItemsSource="{Binding Project.FocusTrees}"
+                    SelectedItem="{Binding SelectedTree}"
+                    MinWidth="280">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate x:DataType="focuses:FocusTree">
+                        <TextBlock Text="{Binding Id}" />
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+        </Border>
+        <views:FocusCanvas x:Name="Surface" />
+    </DockPanel>
 </UserControl>

@@ -36,6 +36,14 @@ public sealed class UndoStack
 {
     private readonly List<IEditCommand> _undo = new();
     private readonly List<IEditCommand> _redo = new();
+    private IEditCommand? _savedAt;
+    private IEditCommand? CurrentTop => _undo.Count > 0 ? _undo[^1] : null;
+    public bool IsDirty => !ReferenceEquals(CurrentTop, _savedAt);
+    public void MarkSaved()
+    {
+        _savedAt = CurrentTop;
+        Changed?.Invoke();
+    }
     private readonly int _maxDepth;
 
     public UndoStack(int maxDepth = 500) => _maxDepth = maxDepth;

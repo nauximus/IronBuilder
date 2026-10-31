@@ -18,10 +18,10 @@
             <MenuItem Header="_File">
                 <MenuItem Header="_New mod..." Click="OnNewMod" />
                 <MenuItem Header="_Import mod folder..." IsEnabled="False" />
-                <MenuItem Header="_Open project..." IsEnabled="False" />
+                <MenuItem Header="_Open project..." Click="OnOpenProject" />
                 <Separator />
-                <MenuItem Header="_Save" IsEnabled="False" />
-                <MenuItem Header="Save _as..." IsEnabled="False" />
+                <MenuItem Header="_Save" Click="OnSave" InputGesture="Ctrl+S" IsEnabled="{Binding HasProject}" />
+                <MenuItem Header="Save _as..." Click="OnSaveAs" InputGesture="Ctrl+Shift+S" IsEnabled="{Binding HasProject}" />
                 <MenuItem Header="_Export mod" IsEnabled="False" />
                 <Separator />
                 <MenuItem Header="_Close project"
@@ -70,7 +70,7 @@
                            HorizontalAlignment="Center"
                            Margin="0,0,0,12" />
                 <Button Content="New mod..." Click="OnNewMod" HorizontalAlignment="Stretch" />
-                <Button Content="Import mod folder..." IsEnabled="False" HorizontalAlignment="Stretch" />
+                <Button Content="Import mod folder..." Click="OnImportMod" HorizontalAlignment="Stretch" />
                 <Button Content="Open project..." IsEnabled="False" HorizontalAlignment="Stretch" />
                 <Button Content="Load sample project"
                         Command="{Binding LoadSampleProjectCommand}"

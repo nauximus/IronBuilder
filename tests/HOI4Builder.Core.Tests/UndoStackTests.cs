@@ -115,4 +115,24 @@ public class UndoStackTests
         Assert.Contains("undo b", log);
         Assert.DoesNotContain("undo a", log);
     }
+    
+    [Fact]
+    public void Dirty_tracking_follows_the_saved_point()
+    {
+        var focus = new Focus { Id = "A" };
+        var stack = new UndoStack();
+        Assert.False(stack.IsDirty);
+
+        stack.Execute(new MoveFocusCommand(focus, 1, 1));
+        Assert.True(stack.IsDirty);
+
+        stack.MarkSaved();
+        Assert.False(stack.IsDirty);
+
+        stack.Undo();
+        Assert.True(stack.IsDirty);
+
+        stack.Redo();
+        Assert.False(stack.IsDirty);
+    }
 }

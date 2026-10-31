@@ -7,16 +7,32 @@ build_property.AvaloniaNameGeneratorFilterByNamespace = *
 build_property.AvaloniaNameGeneratorViewFileNamingStrategy = NamespaceAndClassName
 build_property.AvaloniaNameGeneratorAttachDevTools = true
 build_property.AvaloniaUseCompiledBindingsByDefault = true
+build_property.AvaloniaUseCompiledBindingsByDefault = true
+build_property.AvaloniaMainPackageVersion = 12.1.4
 build_property.AvaloniaMainPackageVersion = 12.1.4
 build_property.AvaloniaPreviewerNetCoreToolPath = /home/naux/.nuget/packages/avalonia/12.1.4/buildTransitive//../tools/net8.0/designer/Avalonia.Designer.HostApp.dll
-build_property.AvaloniaResourcePaths = /mnt/Depo/HOI4ModBuilder/src/HOI4Builder.App/Assets/avalonia-logo.ico,/mnt/Depo/HOI4ModBuilder/src/HOI4Builder.App/App.axaml,/mnt/Depo/HOI4ModBuilder/src/HOI4Builder.App/Views/FocusEditorView.axaml,/mnt/Depo/HOI4ModBuilder/src/HOI4Builder.App/Views/MainWindow.axaml,/mnt/Depo/HOI4ModBuilder/src/HOI4Builder.App/Views/NewModDialog.axaml,/mnt/Depo/HOI4ModBuilder/src/HOI4Builder.App/Views/PlaceholderEditorView.axaml
+build_property.AvaloniaResourcePaths = /mnt/Depo/HOI4ModBuilder/src/HOI4Builder.App/Assets/avalonia-logo.ico,/mnt/Depo/HOI4ModBuilder/src/HOI4Builder.App/App.axaml,/mnt/Depo/HOI4ModBuilder/src/HOI4Builder.App/Views/FocusEditorView.axaml,/mnt/Depo/HOI4ModBuilder/src/HOI4Builder.App/Views/MainWindow.axaml,/mnt/Depo/HOI4ModBuilder/src/HOI4Builder.App/Views/MessageDialog.axaml,/mnt/Depo/HOI4ModBuilder/src/HOI4Builder.App/Views/NewModDialog.axaml,/mnt/Depo/HOI4ModBuilder/src/HOI4Builder.App/Views/PlaceholderEditorView.axaml
+build_property.TargetFramework = net10.0
+build_property.TargetFramework = net10.0
+build_property.TargetFrameworkIdentifier = .NETCoreApp
+build_property.TargetFrameworkIdentifier = .NETCoreApp
+build_property.RuntimeIdentifier = 
+build_property.AppHostRuntimeIdentifier = arch-x64
+build_property.DefaultAppHostRuntimeIdentifier = arch-x64
+build_property.NETCoreSdkPortableRuntimeIdentifier = linux-x64
+build_property.IsTestProject = 
+build_property.HasAvaloniaDiagnosticsSupport = true
+build_property._AvnB64ProjectAssetsFile = L21udC9EZXBvL0hPSTRNb2RCdWlsZGVyL3NyYy9IT0k0QnVpbGRlci5BcHAvb2JqL3Byb2plY3QuYXNzZXRzLmpzb24=
+build_property._AvnB64ProjectDepsFilePath = 
+build_property._AvnB64ProjectRuntimeConfigFilePath = 
+build_property._AvnB64IntermediateOutputPath = b2JqXERlYnVnL25ldDEwLjAv
+build_property._AvnB64PublishDir = YmluXERlYnVnL25ldDEwLjAvcHVibGlzaC8=
+build_property._AvnB64AvaloniaPreviewerNetCoreToolPath = L2hvbWUvbmF1eC8ubnVnZXQvcGFja2FnZXMvYXZhbG9uaWEvMTIuMS40L2J1aWxkVHJhbnNpdGl2ZS8vLi4vdG9vbHMvbmV0OC4wL2Rlc2lnbmVyL0F2YWxvbmlhLkRlc2lnbmVyLkhvc3RBcHAuZGxs
 build_property.MvvmToolkitEnableINotifyPropertyChangingSupport = true
 build_property._MvvmToolkitIsUsingWindowsRuntimePack = false
 build_property.CsWinRTComponent = 
 build_property.CsWinRTAotOptimizerEnabled = 
 build_property.CsWinRTAotWarningLevel = 
-build_property.TargetFramework = net10.0
-build_property.TargetFrameworkIdentifier = .NETCoreApp
 build_property.TargetFrameworkVersion = v10.0
 build_property.TargetPlatformMinVersion = 
 build_property.UsingMicrosoftNETSdkWeb = 
@@ -39,6 +55,9 @@ build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 
 [/mnt/Depo/HOI4ModBuilder/src/HOI4Builder.App/Views/MainWindow.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[/mnt/Depo/HOI4ModBuilder/src/HOI4Builder.App/Views/MessageDialog.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 
 [/mnt/Depo/HOI4ModBuilder/src/HOI4Builder.App/Views/NewModDialog.axaml]

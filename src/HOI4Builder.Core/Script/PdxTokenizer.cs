@@ -4,7 +4,7 @@ namespace HOI4Builder.Core.Script;
 
 public sealed class PdxParseException : Exception
 {
-    public PdxParseException(string message, int line, int column) : base($"{message} {line}, column {column}")
+    public PdxParseException(string message, int line, int column) : base($"{message} (line {line}, column {column})")
     {
         Line = line;
         Column = column;

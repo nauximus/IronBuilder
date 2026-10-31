@@ -42,6 +42,7 @@ public sealed class FocusTree
     // The "country = { factor = ... modifier = ... }" block, raw for now
     public PdxBlock? Country { get; set; }
     public bool IsDefault { get; set; }
+    public string? SourceFile { get; set; }
     public List<Focus> Focuses { get; } = new();
 
     // Ids from "shared_focus = X" lines that point at focuses defined elswhere
