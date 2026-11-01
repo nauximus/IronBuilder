@@ -1,4 +1,5 @@
 using HOI4Builder.Core.Focuses;
+using HOI4Builder.Core.Projects;
 
 namespace HOI4Builder.Core.Editing;
 
@@ -187,4 +188,39 @@ public sealed class PropertyChangeCommand<T> : IEditCommand
     public void Do() => _set(_newValue);
 
     public void Undo() => _set(_oldValue);
+}
+
+public sealed class AddFocusTreeCommand : IEditCommand
+{
+    private readonly ModProject _project;
+    private readonly FocusTree _tree;
+
+    public AddFocusTreeCommand(ModProject project, FocusTree tree)
+    {
+        _project = project;
+        _tree = tree;
+    }
+
+    public string Description => $"Add focus tree {_tree.Id}";
+
+    public void Do() => _project.FocusTrees.Add(_tree);
+
+    public void Undo() => _project.FocusTrees.Remove(_tree);
+}
+
+public sealed class AddCountryCommand : IEditCommand
+{
+    private readonly ModProject _project;
+    private readonly Country _country;
+
+    public AddCountryCommand(ModProject project, Country country)
+    {
+        _project = project;
+        _country = country;
+    }
+
+    public string Description => $"Add country {_country.Tag}";
+
+    public void Do() => _project.Countries.Add(_country);
+    public void Undo() => _project.Countries.Remove(_country);
 }

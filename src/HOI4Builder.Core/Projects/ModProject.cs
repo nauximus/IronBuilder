@@ -1,3 +1,4 @@
+using System.Security.Cryptography.X509Certificates;
 using HOI4Builder.Core.Editing;
 using HOI4Builder.Core.Focuses;
 
@@ -17,6 +18,14 @@ public sealed class ModProject
     public List<string> Tags { get; } = new();
 
     public List<FocusTree> FocusTrees { get; } = new();
+
+    public List<Country> Countries { get; } = new();
+
+    public Country? FindCountry(string tag) => Countries.FirstOrDefault(c => c.Tag == tag);
+
+    public IEnumerable<FocusTree> TreesFor(string tag) => FocusTrees.Where(t => t.CountryTag == tag);
+
+    public List<FocusTree> UnassignedTrees() => FocusTrees.Where(t => t.CountryTag is null).ToList();
 
     public UndoStack History { get; } = new();
 
@@ -39,5 +48,23 @@ public sealed class ModProject
             GameVersion = gameVersion.Trim(),
             ExportFolder = string.IsNullOrWhiteSpace(exportFolder) ? null : exportFolder.Trim(),
         };
+
+    }
+
+    public string MakeUniqueTreeId(string prefix)
+    {
+        int n = 1;
+        while (FocusTrees.Any(t => t.Id == $"{prefix}{n}"))
+            n++;
+        return $"{prefix}{n}";
+    }
+
+    public void EnsureCountriesForTrees()
+    {
+        foreach (var tag in FocusTrees.Select(t => t.CountryTag).OfType<string>().Distinct().ToList())
+        {
+            if (FindCountry(tag) is null)
+                Countries.Add(new Country(tag, tag));
+        }
     }
 }

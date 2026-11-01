@@ -25,7 +25,7 @@
                 <MenuItem Header="_Export mod" IsEnabled="False" />
                 <Separator />
                 <MenuItem Header="_Close project"
-                          Command="{Binding CloseProjectCommand}"
+                          Click="OnCloseProject"
                           IsEnabled="{Binding HasProject}" />
             </MenuItem>
             <MenuItem Header="_Edit">
@@ -41,17 +41,31 @@
             <TextBlock Text="{Binding StatusText}" />
         </Border>
 
-        <ListBox DockPanel.Dock="Left"
-                 Width="200"
-                 IsEnabled="{Binding HasProject}"
-                 ItemsSource="{Binding Editors}"
-                 SelectedItem="{Binding SelectedEditor}">
+        <DockPanel DockPanel.Dock="Left" Width="220" IsEnabled="{Binding HasProject}">
+        <StackPanel DockPanel.Dock="Top" Margin="8" Spacing="6">
+            <TextBlock Text="Country" />
+            <ComboBox ItemsSource="{Binding Selection.All}"
+                    SelectedItem="{Binding Selection.Selected}"
+                    HorizontalAlignment="Stretch" />
+            <TextBox Text="{Binding Selection.NewTag}" PlaceholderText="Tag (e.g. GER)" />
+            <TextBox Text="{Binding Selection.NewName}" PlaceholderText="Name (optional)" />
+            <Button Content="Add country"
+                    Command="{Binding Selection.AddCountryCommand}"
+                    HorizontalAlignment="Stretch" />
+            <TextBlock Text="{Binding Selection.AddError}"
+                    IsVisible="{Binding Selection.HasAddError}"
+                    Foreground="#e5534b"
+                    TextWrapping="Wrap" />
+        </StackPanel>
+        <ListBox ItemsSource="{Binding Editors}"
+                SelectedItem="{Binding SelectedEditor}">
             <ListBox.ItemTemplate>
                 <DataTemplate x:DataType="vm:EditorEntry">
                     <TextBlock Text="{Binding Title}" Margin="6,4" />
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
+        </DockPanel>
 
         <Grid>
             <ContentControl Content="{Binding SelectedEditor.ViewModel}"
@@ -62,16 +76,16 @@
                         VerticalAlignment="Center"
                         Spacing="10"
                         Width="280">
-                <TextBlock Text="HOI4Builder" FontSize="30" HorizontalAlignment="Center" />
+                <TextBlock Text="IronBuilder" FontSize="30" HorizontalAlignment="Center" />
                 <TextBlock Text="Start a new mod or continue an existing one."
                            Opacity="0.7"
                            TextWrapping="Wrap"
                            TextAlignment="Center"
                            HorizontalAlignment="Center"
                            Margin="0,0,0,12" />
-                <Button Content="New mod..." Click="OnNewMod" HorizontalAlignment="Stretch" />
-                <Button Content="Import mod folder..." Click="OnImportMod" HorizontalAlignment="Stretch" />
-                <Button Content="Open project..." IsEnabled="False" HorizontalAlignment="Stretch" />
+                <Button Content="Create a Mod" Click="OnNewMod" HorizontalAlignment="Stretch" />
+                <Button Content="Import existing mod folder" Click="OnImportMod" HorizontalAlignment="Stretch" />
+                <Button Content="Open project" IsEnabled="False" HorizontalAlignment="Stretch" />
                 <Button Content="Load sample project"
                         Command="{Binding LoadSampleProjectCommand}"
                         HorizontalAlignment="Stretch" />

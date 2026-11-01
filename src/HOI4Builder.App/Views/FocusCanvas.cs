@@ -6,11 +6,18 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Media;
-using Avalonia.Metadata;
 using HOI4Builder.Core.Focuses;
 using HOI4Builder.Core.Editing;
 
 namespace HOI4Builder.App.Views;
+
+public enum LinkMode
+{
+    None,
+    AddPrerequisite,
+    MakePrerequisiteOf,
+    Exclusive,
+}
 
 public class FocusCanvas : Control
 {
@@ -40,6 +47,14 @@ public class FocusCanvas : Control
     private int _dragStartY;
     private Vector _grabOffset;
 
+    private static readonly IBrush BannerFill = new SolidColorBrush(Color.Parse("#cc2b3a4f"));
+    
+    private LinkMode _linkMode;
+    private Focus? _linkSource;
+
+    public event Action<Focus?>? SelectionChanged;
+    public event Action<string?>? Notice;
+
     public FocusCanvas()
     {
         Focusable = true;
@@ -52,10 +67,21 @@ public class FocusCanvas : Control
         {
             _tree = value;
             _positions = value is null ? new() : FocusLayout.ResolvePositions(value);
-            _selected = null;
+            SetSelected(null);
             _dragFocus = null;
+            EndLink();
             InvalidateVisual();
         }
+    }
+
+    private void SetSelected(Focus? focus)
+    {
+        if (ReferenceEquals(_selected, focus))
+            return;
+        
+        _selected = focus;
+        SelectionChanged?.Invoke(focus);
+        InvalidateVisual();
     }
 
     // ---- Drawing
@@ -66,11 +92,12 @@ public class FocusCanvas : Control
 
         var bounds = new Rect(Bounds.Size);
         context.DrawRectangle(BackgroundBrush, null, bounds);
+
         if (_tree is null)
-        {
-            Console.WriteLine("Render: tree is null");
             return;
-        }
+
+        Console.WriteLine($"render: pan={_pan} zoom={_zoom} focuses={_tree.Focuses.Count} positions={_positions.Count}");
+
         try
         {
             var view = Matrix.CreateScale(_zoom, _zoom) * Matrix.CreateTranslation(_pan.X, _pan.Y);
@@ -80,6 +107,9 @@ public class FocusCanvas : Control
                 DrawLinks(context);
                 DrawNodes(context);
             }
+
+            if (_linkMode != LinkMode.None && _linkSource != null)
+                DrawBanner(context, bounds, LinkPrompt());
         }
         catch (Exception ex)
         {
@@ -188,15 +218,50 @@ public class FocusCanvas : Control
 
         var point = e.GetCurrentPoint(this);
         var screen = point.Position;
+        Console.WriteLine($"pressed: left={point.Properties.IsLeftButtonPressed} right={point.Properties.IsRightButtonPressed} middle={point.Properties.IsMiddleButtonPressed} linkMode={_linkMode} panning={_panning}");
+
+        if (point.Properties.IsRightButtonPressed)
+        {
+            // The menu itself opens when the button is released.
+            var rightHit = HitTest(ToWorld(screen));
+            if (rightHit != null && _linkMode == LinkMode.None)
+                SetSelected(rightHit);
+
+            e.Handled = true;
+            return;
+        }
 
         if (point.Properties.IsLeftButtonPressed)
         {
             var world = ToWorld(screen);
             var hit = HitTest(world);
 
+            if (_linkMode != LinkMode.None)
+            {
+                CompleteLink(hit);
+                e.Handled = true;
+                return;
+            }
+
             if (hit != null)
             {
-                _selected = hit;
+                if (_selected != null && !ReferenceEquals(hit, _selected) && _tree != null && _history != null
+                    && (e.KeyModifiers.HasFlag(KeyModifiers.Control) || e.KeyModifiers.HasFlag(KeyModifiers.Shift)))
+                {
+                    string? error;
+                    var command = e.KeyModifiers.HasFlag(KeyModifiers.Shift)
+                        ? FocusLinkEditing.ToggleExclusive(_selected, hit, out error)
+                        : FocusLinkEditing.TogglePrerequisite(_tree, hit, _selected.Id, out error);
+
+                    if (command != null)
+                        _history.Execute(command);
+
+                    Notice?.Invoke(error);
+                    e.Handled = true;
+                    return;
+                }
+
+                SetSelected(hit);
                 _dragFocus = hit;
                 _dragStartX = hit.X;
                 _dragStartY = hit.Y;
@@ -210,7 +275,7 @@ public class FocusCanvas : Control
                 return;
             }
 
-            _selected = null;
+            SetSelected(null);
         }
 
         if (point.Properties.IsLeftButtonPressed || point.Properties.IsMiddleButtonPressed)
@@ -229,7 +294,7 @@ public class FocusCanvas : Control
         base.OnPointerMoved(e);
         var screen = e.GetPosition(this);
 
-        if(_dragFocus != null && _tree != null)
+        if (_dragFocus != null && _tree != null)
         {
             var world = ToWorld(screen);
             var cell = new GridPoint(
@@ -250,15 +315,31 @@ public class FocusCanvas : Control
 
         if (!_panning)
             return;
-        
+
         _pan += screen - _lastPoint;
         _lastPoint = screen;
+        Console.WriteLine($"moved: pan={_pan}");
         InvalidateVisual();
     }
 
     protected override void OnPointerReleased(PointerReleasedEventArgs e)
     {
         base.OnPointerReleased(e);
+        Console.WriteLine($"released: {e.InitialPressMouseButton} panning={_panning} dragging={_dragFocus != null}");
+
+        if (e.InitialPressMouseButton == MouseButton.Right)
+        {
+            if (_linkMode != LinkMode.None)
+            {
+                EndLink();
+            }
+            else
+                OpenContextMenu(e.GetPosition(this));
+            
+            e.Handled = true;
+            return;
+        }
+
         if (_dragFocus != null)
         {
             var focus = _dragFocus;
@@ -322,7 +403,217 @@ public class FocusCanvas : Control
     private void OnHistoryChanged()
     {
         if (_tree != null)
+        {
             _positions = FocusLayout.ResolvePositions(_tree);
+            if (_selected != null && !_tree.Focuses.Contains(_selected))
+                SetSelected(null);
+            if (_linkSource != null && !_tree.Focuses.Contains(_linkSource))
+                EndLink();
+        }
         InvalidateVisual();
+    }
+
+    protected override void OnKeyDown(KeyEventArgs e)
+    {
+        base.OnKeyDown(e);
+
+        if (e.Key == Key.Escape && _linkMode != LinkMode.None)
+        {
+            EndLink();
+            e.Handled = true;
+        }
+        else if (e.Key == Key.Delete && _selected != null)
+        {
+            DeleteSelected();
+            e.Handled = true;
+        }
+    }
+
+    // Actions used by menu
+    public void AddFocusAt(int cellX, int cellY)
+    {
+        Console.WriteLine($"AddFocusAt: cell={cellX},{cellY} tree={_tree?.Id} history={_history != null}");
+        if (_tree is null || _history is null)
+            return;
+        
+        var focus = new Focus { Id = _tree.MakeUniqueId("NEW_FOCUS_"), X = cellX, Y= cellY};
+        _history.Execute(new AddFocusCommand(_tree, focus));
+        SetSelected(focus);
+    }
+    // Used by the toolbar, puts the focs in the first free cell at or after middle of the view.
+    public void AddFocusInView()
+    {
+        if (_tree is null)
+            return;
+        
+        var center = ToWorld(new Point(Bounds.Width / 2, Bounds.Height / 2));
+        int startX = (int)Math.Floor(center.X / CellWidth);
+        int x = startX;
+        int y = (int)Math.Floor(center.Y / CellHeight);
+
+        int guard = 0;
+
+        while (IsCellOccupied(x, y) && guard++ < 500)
+        {
+            x++;
+            if (x > startX + 7)
+            {
+                x = startX;
+                y++;
+            }
+
+            AddFocusAt(x, y);
+        }
+    }
+
+    public void DeleteSelected()
+    {
+        if (_selected  != null)
+            DeleteFocus(_selected);
+    }
+
+    private void DeleteFocus(Focus focus)
+    {
+        if (_tree is null || _history is null)
+            return;
+        
+        if (ReferenceEquals(_selected, focus))
+            SetSelected(null);
+        
+        _history.Execute(new DeleteFocusCommand(_tree, focus));
+    }
+
+    public void ResetView()
+    {
+        _zoom = 1;
+        _pan = new Point(40, 40);
+        InvalidateVisual();
+    }
+
+    private bool IsCellOccupied(int x, int y) => _positions.Values.Any(p => p.X == x && p.Y == y);
+
+    // Link mode
+    public void BeginLink(LinkMode mode)
+    {
+        if (_selected is null || _tree is null || _history is null)
+            return;
+        
+        _linkMode = mode;
+        _linkSource = _selected;
+        Notice?.Invoke(null);
+        this.Focus();
+        InvalidateVisual();
+    }
+
+    private void EndLink()
+    {
+        _linkMode = LinkMode.None;
+        _linkSource = null;
+        InvalidateVisual();
+    }
+
+    private void CompleteLink(Focus? clicked)
+    {
+        var source = _linkSource;
+        var mode = _linkMode;
+
+        if (clicked is null || source is null || _tree is null || _history is null)
+        {
+            EndLink();
+            return;
+        }
+
+        if (ReferenceEquals(clicked, source))
+        {
+            Notice?.Invoke("Pick a different focus or press Esc to cancel.");
+            return;
+        }
+
+        string? error = null;
+        IEditCommand? command = mode switch
+        {
+            LinkMode.AddPrerequisite => FocusLinkEditing.TogglePrerequisite(_tree, source, clicked.Id, out error),
+            LinkMode.MakePrerequisiteOf => FocusLinkEditing.TogglePrerequisite(_tree, clicked, source.Id, out error),
+            _ => FocusLinkEditing.ToggleExclusive(source,  clicked, out error),
+        };
+
+        if (command != null)
+            _history.Execute(command);
+
+        Notice?.Invoke(error);
+        EndLink();
+    }
+
+    private string LinkPrompt() => _linkMode switch
+    {
+        LinkMode.AddPrerequisite => $"Click thefocus that {_linkSource!.Id} requires. ESC or right-click to cancel.",
+        LinkMode.MakePrerequisiteOf => $"Click the focus that requires {_linkSource!.Id}.",
+        _ => $"Click the focus that is mutually exclusive with {_linkSource!.Id}. ESC or right-click to cancel"
+    };
+
+    private static void DrawBanner(DrawingContext context, Rect bounds, string text)
+    {
+        var formatted = new FormattedText(
+            text, CultureInfo.InvariantCulture, FlowDirection.LeftToRight,
+            Typeface.Default, 14, Brushes.White)
+        {
+            MaxTextWidth = Math.Max(50, bounds.Width - 40),
+        };
+
+        var rect = new Rect(10, 10, formatted.Width + 20, formatted.Height + 14);
+        context.DrawRectangle(BannerFill, null, rect, 6, 6);
+        context.DrawText(formatted, new Point(20, 17));
+    }
+
+    // Context menu
+
+    private void StartLinkFrom(Focus focus, LinkMode mode)
+    {
+        SetSelected(focus);
+        BeginLink(mode);
+    }
+
+    private static MenuItem MenuEntry(string header, Action action, bool enabled = true)
+    {
+        var item = new MenuItem { Header = header, IsEnabled = enabled};
+        item.Click += (_, _) => action();
+        return item;
+    }
+
+    private void OpenContextMenu(Point screen)
+    {
+        if (_tree is null || _history is null)
+            return;
+        
+        var world = ToWorld(screen);
+        Console.WriteLine($"menu: screen={screen} world={world}");
+        var menu = new ContextMenu();
+
+        if (HitTest(world) is { } focus)
+        {
+            bool others = _tree.Focuses.Count > 1;
+
+            menu.Items.Add(MenuEntry("Add prerequisite...", () => StartLinkFrom(focus, LinkMode.AddPrerequisite), others));
+            menu.Items.Add(MenuEntry("Make prerequisite of...", () => StartLinkFrom(focus, LinkMode.MakePrerequisiteOf), others));
+            menu.Items.Add(MenuEntry("Mutually exclusive with...", () => StartLinkFrom(focus, LinkMode.Exclusive), others));
+            menu.Items.Add(new Separator());
+            menu.Items.Add(MenuEntry("Delete focus", () => DeleteFocus(focus)));
+        }
+        else
+        {
+            int cellX = (int)Math.Floor(world.X / CellWidth);
+            int cellY = (int)Math.Floor(world.Y / CellHeight);
+            bool occupied = IsCellOccupied(cellX, cellY);
+
+            menu.Items.Add(MenuEntry(
+                occupied ? "Add focus here (cell occupied)" : "Add focus here",
+                () => AddFocusAt(cellX, cellY),
+                !occupied));
+
+            menu.Items.Add(new Separator());
+            menu.Items.Add(MenuEntry("Reset view", ResetView));
+        }
+
+        menu.Open(this);
     }
 }

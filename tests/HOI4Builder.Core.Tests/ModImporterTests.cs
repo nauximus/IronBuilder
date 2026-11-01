@@ -105,4 +105,17 @@ public sealed class ModImporterTests : IDisposable
         Assert.Throws<DirectoryNotFoundException>(() =>
             ModImporter.ImportFolder(Path.Combine(_root, "does-not-exist")));
     }
+    [Fact]
+    public void Imports_country_tags_and_assigns_trees()
+    {
+        Write("descriptor.mod", Descriptor);
+        Write("common/country_tags/00_tags.txt", "TST = \"countries/Test.txt\"\nXYZ = \"countries/Xyz.txt\"\n");
+        Write("common/national_focus/a.txt",
+            "focus_tree = { id = a country = { factor = 0 modifier = { add = 10 tag = GER } } }");
+
+        var project = ModImporter.ImportFolder(_root).Project;
+
+        Assert.Equal(new[] { "GER", "TST", "XYZ" }, project.Countries.Select(c => c.Tag).OrderBy(t => t).ToArray());
+        Assert.Equal("a", Assert.Single(project.TreesFor("GER")).Id);
+    }
 }

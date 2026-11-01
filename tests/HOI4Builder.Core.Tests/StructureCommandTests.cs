@@ -1,6 +1,7 @@
 using HOI4Builder.Core.Editing;
 using HOI4Builder.Core.Focuses;
 using HOI4Builder.Core.Script;
+using HOI4Builder.Core.Projects;
 using Xunit;
 
 namespace HOI4Builder.Core.Tests;
@@ -119,5 +120,31 @@ public class StructureCommandTests
     {
         var tree = Tree("focus = { id = NEW_1 x = 0 y = 0 }");
         Assert.Equal("NEW_2", tree.MakeUniqueId("NEW_"));
+    }
+
+    [Fact]
+    public void Add_tree_and_undo()
+    {
+        var project = ModProject.CreateNew("Mod", "mod", "1.19.*", null);
+        var stack = new UndoStack();
+        var tree = new FocusTree { Id = project.MakeUniqueTreeId("new_tree_") };
+
+        stack.Execute(new AddFocusTreeCommand(project, tree));
+        Assert.Single(project.FocusTrees);
+
+        stack.Undo();
+        Assert.Empty(project.FocusTrees);
+
+        stack.Redo();
+        Assert.Same(tree, Assert.Single(project.FocusTrees));
+    }
+
+    [Fact]
+    public void MakeUniqueTreeId_skips_taken_ids()
+    {
+        var project = ModProject.CreateNew("Mod", "mod", "1.19.*", null);
+        project.FocusTrees.Add(new FocusTree { Id = "new_tree_1" });
+
+        Assert.Equal("new_tree_2", project.MakeUniqueTreeId("new_tree_"));
     }
 }

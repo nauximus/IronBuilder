@@ -25,6 +25,9 @@ public partial class MainViewModel : ViewModelBase
     [ObservableProperty]
     private string _statusText = "No project open";
 
+    [ObservableProperty]
+    private CountrySelection? _selection;
+
     public bool HasProject => Project != null;
     public bool HasUnsavedChanges =>
         Project != null && (Project.History.IsDirty || Project.FilePath == null);
@@ -56,8 +59,9 @@ public partial class MainViewModel : ViewModelBase
         if (newValue != null)
         {
             newValue.History.Changed += OnHistoryChanged;
+            Selection = new CountrySelection(newValue);
 
-            Editors.Add(new("Focus trees", new FocusEditorViewModel(newValue)));
+            Editors.Add(new("Focus trees", new FocusEditorViewModel(newValue, Selection)));
             Editors.Add(new("Countries", new PlaceholderEditorViewModel("Countries")));
             Editors.Add(new("Characters", new PlaceholderEditorViewModel("Characters")));
             Editors.Add(new("Events", new PlaceholderEditorViewModel("Events")));
@@ -71,6 +75,7 @@ public partial class MainViewModel : ViewModelBase
         }
         else
         {
+            Selection = null;
             SelectedEditor = null;
             StatusText = "No project open";
         }
@@ -110,6 +115,7 @@ public partial class MainViewModel : ViewModelBase
         const string sample = """
             focus_tree = {
                 id = demo
+                country = { factor = 0 modifier = { add = 10 tag = DEM }}
                 focus = { id = DEMO_start x = 2 y = 0 }
                 focus = { id = DEMO_left x = 1 y = 1 prerequisite = { focus = DEMO_start } mutually_exclusive = { focus = DEMO_right } }
                 focus = { id = DEMO_right x = 3 y = 1 prerequisite = { focus = DEMO_start } mutually_exclusive = { focus = DEMO_left } }
@@ -119,6 +125,7 @@ public partial class MainViewModel : ViewModelBase
 
         var project = new ModProject();
         project.FocusTrees.AddRange(FocusTreeMapper.ReadTrees(PdxParser.Parse(sample)));
+        project.EnsureCountriesForTrees();
         return project;
     }
 }

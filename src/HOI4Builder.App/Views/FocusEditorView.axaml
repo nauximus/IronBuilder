@@ -6,17 +6,81 @@
             x:Class="HOI4Builder.App.Views.FocusEditorView"
             x:DataType="vm:FocusEditorViewModel">
     <DockPanel>
-        <Border DockPanel.Dock="Top" Padding="8">
-            <ComboBox ItemsSource="{Binding Project.FocusTrees}"
-                    SelectedItem="{Binding SelectedTree}"
-                    MinWidth="280">
-                <ComboBox.ItemTemplate>
-                    <DataTemplate x:DataType="focuses:FocusTree">
-                        <TextBlock Text="{Binding Id}" />
-                    </DataTemplate>
-                </ComboBox.ItemTemplate>
-            </ComboBox>
+       <Border DockPanel.Dock="Top" Padding="8">
+        <StackPanel Spacing="8">
+            <StackPanel Orientation="Horizontal" Spacing="12">
+                <ComboBox ItemsSource="{Binding Trees}"
+                        SelectedItem="{Binding SelectedTree}"
+                        MinWidth="240">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate x:DataType="focuses:FocusTree">
+                            <TextBlock Text="{Binding Id}" />
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+                <Button Content="New tree" Command="{Binding AddTreeCommand}" />
+                <CheckBox Content="Show unassigned trees" IsChecked="{Binding ShowUnassigned}" />
+                <Button Content="Assign to selected country" Command="{Binding AssignToCountryCommand}" />
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal" Spacing="8">
+                <Button Content="Add focus" Click="OnAddFocus" IsEnabled="{Binding HasTree}" />
+                <Button Content="Delete" Click="OnDeleteFocus" IsEnabled="{Binding HasProperties}" />
+                <Button Content="Add prerequisite..." Click="OnAddPrerequisite" IsEnabled="{Binding HasProperties}" />
+                <Button Content="Make prerequisite of..." Click="OnMakePrerequisiteOf" IsEnabled="{Binding HasProperties}" />
+                <Button Content="Mutually exclusive..." Click="OnExclusive" IsEnabled="{Binding HasProperties}" />
+                <Button Content="Reset view" Click="OnResetView" IsEnabled="{Binding HasTree}" />
+                <TextBlock Text="{Binding Notice}" Foreground="#e5534b" VerticalAlignment="Center" />
+            </StackPanel>
+        </StackPanel>
         </Border>
+
+        <Border DockPanel.Dock="Right"
+                Width="260"
+                Padding="12"
+                IsVisible="{Binding HasProperties}">
+            <ContentControl Content="{Binding HasProperties}">
+                <ContentControl.ContentTemplate>
+                    <DataTemplate x:DataType="vm:FocusPropertiesViewModel">
+                        <StackPanel Spacing="12">
+                            <TextBlock Text="Focus" FontSize="18" />
+                            <TextBlock Text="{Binding Position}" Opacity="0.6" />
+
+                            <StackPanel Spacing="4">
+                                <TextBlock Text="Id" />
+                                <TextBox Text="{Binding Id}" />
+                            </StackPanel>
+                            <StackPanel Spacing="4">
+                                <TextBlock Text="Cost" />
+                                <TextBox Text="{Binding Cost}" PlaceholderText="default" />
+                            </StackPanel>
+                            <StackPanel Spacing="4">
+                                <TextBlock Text="Icon" />
+                                <TextBox Text="{Binding Icon}" PlaceholderText="GFX_..." />
+                            </StackPanel>
+                            <StackPanel Spacing="4">
+                                <TextBlock Text="Requires" />
+                                <TextBlock Text="{Binding Prerequisites}" Opacity="0.7" TextWrapping="Wrap" />
+                            </StackPanel>
+                            <StackPanel Spacing="4">
+                                <TextBlock Text="Mutually exclusive with" />
+                                <TextBlock Text="{Binding Exclusive}" Opacity="0.7" TextWrapping="Wrap" />
+                            </StackPanel>
+
+                            <TextBlock Text="{Binding Error}"
+                                        IsVisible="{Binding HasError}"
+                                        Foreground="#e5534b"
+                                        TextWrapping="Wrap" />
+                        </StackPanel>
+                    </DataTemplate>
+                </ContentControl.ContentTemplate>
+            </ContentControl>
+        </Border>
+        <TextBlock DockPanel.Dock="Bottom"
+                    Margin="8,4"
+                    Opacity="0.6"
+                    TextWrapping="Wrap"
+                    Text="Right-click the canvas to add a focus, or a focus to edit its links and delete it. Shortcuts: select a focus, then Ctrl+click another to make it require the first, or Shift+click to make the two mutually exclusive. Click the same link again to remove it. ESC cancels a link in progress." />
         <views:FocusCanvas x:Name="Surface" />
     </DockPanel>
 </UserControl>

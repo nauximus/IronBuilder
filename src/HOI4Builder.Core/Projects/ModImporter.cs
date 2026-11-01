@@ -52,7 +52,9 @@ public static class ModImporter
         if (descriptor != null)
             project.Tags.AddRange(descriptor.Tags);
         
+        ImportCountryTags(folder, project, warnings);
         ImportFocusFiles(folder, project, warnings);
+        project.EnsureCountriesForTrees();
 
         return new ImportResult(project, warnings);
     }
@@ -98,6 +100,36 @@ public static class ModImporter
             catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
             {
                 warnings.Add($"{relative}: could not be read ({ex.Message})");
+            }
+        }
+    }
+
+    private static void ImportCountryTags(string folder, ModProject project, List<string> warnings)
+    {
+        var dir = Path.Combine(folder, "common", "country_tags");
+        if (!Directory.Exists(dir))
+            return;
+        
+        foreach (var file in Directory.GetFiles(dir, "*.txt").OrderBy(f => f, StringComparer.Ordinal))
+        {
+            string relative = Path.GetRelativePath(folder, file).Replace('\\', '/');
+
+            try
+            {
+                var root = PdxParser.Parse(File.ReadAllText(file));
+
+                foreach (var entry in root.Entries)
+                {
+                    if (entry.Key is null || CountryTagRules.Validate(entry.Key) != null)
+                        continue;
+                    
+                    if (project.FindCountry(entry.Key) is null)
+                        project.Countries.Add(new Country(entry.Key, entry.Key));
+                }
+            }
+            catch (PdxParseException ex)
+            {
+                warnings.Add($"{relative}: {ex.Message}");
             }
         }
     }

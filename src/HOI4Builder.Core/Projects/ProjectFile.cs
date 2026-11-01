@@ -29,6 +29,7 @@ internal sealed class ProjectDto
     public string? ExportFolder { get; set; }
     public string? ImportFromFolder { get; set; }
     public List<string>? Tags { get; set; }
+    public List<CountryDto>? Countries { get; set; }
     public List<TreeDto>? FocusTrees { get; set; }
 }
 
@@ -36,6 +37,12 @@ internal sealed class TreeDto
 {
     public string? SourceFile { get; set; }
     public string Script { get; set; } = "";
+}
+
+internal sealed class CountryDto
+{
+    public string Tag { get; set; } = "";
+    public string Name { get; set; } = "";
 }
 
 public static class ProjectFile
@@ -57,6 +64,7 @@ public static class ProjectFile
             ExportFolder = project.ExportFolder,
             ImportFromFolder = project.ImportFromFolder,
             Tags = new List<string>(project.Tags),
+            Countries = project.Countries.Select(c => new CountryDto { Tag = c.Tag, Name = c.Name}).ToList(),
             FocusTrees = new List<TreeDto>(),
         };
 
@@ -121,6 +129,10 @@ public static class ProjectFile
                 throw new ProjectFileException($"A focus tree in project file is damaged: {ex.Message}", ex);
             }
         }
+        foreach (var country in dto.Countries ?? new List<CountryDto>())
+            project.Countries.Add(new Country(country.Tag, country.Name));
+
+        project.EnsureCountriesForTrees();
 
         return project;
     }

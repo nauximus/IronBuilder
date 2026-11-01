@@ -1,3 +1,4 @@
 
-/src/HOI4Builder.App/bin
-/src/HOI4Builder.App/bin/Debug
+/src/HOI4Builder.App/bin/*
+/src/HOI4Builder.App/bin/Debug/*
+/src/HOI4Builder.App/bin/Debug/net10.0/*

@@ -24,6 +24,8 @@ public sealed class ProjectFileTests : IDisposable
         project.ModVersion = "1.2";
         project.Tags.Add("Gameplay");
 
+        project.Countries.Add(new Country("TST", "Testland"));
+
         var tree = FocusTreeMapper.ReadTrees(PdxParser.Parse(
             "focus_tree = { id = t focus = { id = A x = 1 y = 2 cancel_if_invalid = yes } }"))[0];
         tree.SourceFile = "common/national_focus/t.txt";
@@ -47,10 +49,20 @@ public sealed class ProjectFileTests : IDisposable
         var tree = Assert.Single(loaded.FocusTrees);
         Assert.Equal("common/national_focus/t.txt", tree.SourceFile);
 
+        Assert.Equal("Testland", loaded.FindCountry("TST")!.Name);
         var focus = Assert.Single(tree.Focuses);
         Assert.Equal(1, focus.X);
         Assert.Equal(2, focus.Y);
         Assert.Equal("cancel_if_invalid", Assert.Single(focus.ExtraEntries).Key);
+    }
+
+    [Fact]
+    public void Files_without_countries_still_load()
+    {
+        var project = ProjectFile.Deserialize(
+            "{ \"FormatVersion\": 1, \"Name\": \"x\", \"ModId\": \"x\", \"GameVersion\": \"1.19.*\" }");
+
+        Assert.Empty(project.Countries);
     }
 
     [Fact]
