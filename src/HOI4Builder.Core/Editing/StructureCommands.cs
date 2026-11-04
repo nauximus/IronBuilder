@@ -224,3 +224,32 @@ public sealed class AddCountryCommand : IEditCommand
     public void Do() => _project.Countries.Add(_country);
     public void Undo() => _project.Countries.Remove(_country);
 }
+
+public sealed class RemoveCountryCommand : IEditCommand
+{
+    private readonly ModProject _project;
+    private readonly Country _country;
+    private int _index = -1;
+
+    public RemoveCountryCommand(ModProject project, Country country)
+    {
+        _project = project;
+        _country = country;
+    }
+
+    public string Description => $"Remove country {_country.Tag}";
+
+    public void Do()
+    {
+        _index = _project.Countries.IndexOf(_country);
+        if (_index >= 0 )
+            _project.Countries.RemoveAt(_index);
+    }
+
+    public void Undo()
+    {
+        if (_index >= 0)
+            _project.Countries.Insert(_index, _country);
+    }
+
+}

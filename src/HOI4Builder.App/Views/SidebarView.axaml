@@ -1,0 +1,122 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="HOI4Builder.App.Views.SidebarView"
+             x:CompileBindings="False">
+
+    <UserControl.Styles>
+        <Style Selector="Button.mode">
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+            <Setter Property="Margin" Value="2,0" />
+        </Style>
+        <Style Selector="Button.mode.active /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="#3a6ea5" />
+            <Setter Property="Foreground" Value="White" />
+        </Style>
+
+        <Style Selector="Button.page">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+            <Setter Property="HorizontalContentAlignment" Value="Left" />
+            <Setter Property="Padding" Value="12,5" />
+            <Setter Property="Margin" Value="4,1" />
+            <Setter Property="CornerRadius" Value="4" />
+        </Style>
+        <Style Selector="Button.page.selected /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="#553a6ea5" />
+        </Style>
+        <Style Selector="Button.page.off">
+            <Setter Property="Opacity" Value="0.4" />
+        </Style>
+    </UserControl.Styles>
+
+    <DockPanel>
+
+        <!-- Mode switch -->
+        <Grid DockPanel.Dock="Top" ColumnDefinitions="*,*" Margin="8">
+            <Button Grid.Column="0"
+                    Classes="mode"
+                    Classes.active="{Binding IsModEditorsActive}"
+                    Content="Mod editors"
+                    Command="{Binding SelectModeCommand}"
+                    CommandParameter="{Binding Modes[0]}" />
+            <Button Grid.Column="1"
+                    Classes="mode"
+                    Classes.active="{Binding IsBuildersActive}"
+                    Content="Builders"
+                    Command="{Binding SelectModeCommand}"
+                    CommandParameter="{Binding Modes[1]}" />
+        </Grid>
+
+        <!-- Footer -->
+        <Border DockPanel.Dock="Bottom"
+                BorderBrush="#33FFFFFF"
+                BorderThickness="0,1,0,0"
+                Padding="12,10"
+                IsEnabled="{Binding HasProject}">
+            <StackPanel Spacing="6">
+                <TextBlock Text="{Binding ModTitle}"
+                           FontWeight="Bold"
+                           FontSize="14"
+                           TextTrimming="CharacterEllipsis" />
+                <TextBlock Text="{Binding SaveStatusText}"
+                           FontSize="11"
+                           Opacity="0.6" />
+                <Grid ColumnDefinitions="*,*" Margin="0,4,0,0">
+                    <Button Grid.Column="0"
+                            Content="Quick save"
+                            Click="OnQuickSave"
+                            HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Center"
+                            Margin="0,0,3,0" />
+                    <Button Grid.Column="1"
+                            Content="Save as..."
+                            Click="OnSaveAs"
+                            HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Center"
+                            Margin="3,0,0,0" />
+                </Grid>
+            </StackPanel>
+        </Border>
+
+        <!-- Menu: last child, fills the remaining space -->
+        <ScrollViewer Background="Transparent">
+            <ItemsControl ItemsSource="{Binding SelectedMode.Sections}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Margin="0,8,0,0">
+                            <TextBlock Text="{Binding Title}"
+                                       FontWeight="Bold"
+                                       FontSize="11"
+                                       Opacity="0.6"
+                                       Margin="12,4,8,2" />
+                            <ItemsControl ItemsSource="{Binding Pages}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Button Classes="page"
+                                                Classes.selected="{Binding IsSelected}"
+                                                Command="{Binding $parent[UserControl].DataContext.SelectPageCommand}"
+                                                CommandParameter="{Binding}"
+                                                IsHitTestVisible="{Binding IsEnabled}"
+                                                Focusable="{Binding IsEnabled}"
+                                                Classes.off="{Binding !IsEnabled}">
+                                            <StackPanel>
+                                                <TextBlock Text="{Binding Title}" />
+                                                <TextBlock Text="{Binding Subtitle}"
+                                                           FontSize="11"
+                                                           Opacity="0.6"
+                                                           TextTrimming="CharacterEllipsis"
+                                                           IsVisible="{Binding Subtitle, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+                                            </StackPanel>
+                                        </Button>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+
+    </DockPanel>
+</UserControl>

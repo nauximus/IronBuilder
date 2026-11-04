@@ -106,6 +106,40 @@ public partial class FocusPropertiesViewModel : ViewModelBase, IDisposable
         }
     }
 
+    public string Name
+    {
+        get => _focus.Name ?? "";
+        set
+        {
+            value = value?.Trim() ?? "";
+            string? text = value.Length == 0 ? null : value;
+
+            if (text == _focus.Name)
+                return;
+            
+            Error = null;
+            _history.Execute(new PropertyChangeCommand<string?>(
+                $"Set name of {_focus.Id}", () => _focus.Name, v => _focus.Name = v, text));
+        }
+    }
+
+    public string Description
+    {
+        get => _focus.Description ?? "";
+        set
+        {
+            value = value?.Trim() ?? "";
+            string? text = value.Length == 0 ? null : value;
+
+            if (text == _focus.Description)
+                return;
+
+            Error = null;
+            _history.Execute(new PropertyChangeCommand<string?>(
+                $"Set description of {_focus.Id}", () => _focus.Description, v => _focus.Description = v, text));
+        }
+    }
+
     public string Prerequisites => _focus.Prerequisites.Count == 0
         ? "none"
         : string.Join("  AND  ", _focus.Prerequisites.Select(group =>
@@ -120,6 +154,8 @@ public partial class FocusPropertiesViewModel : ViewModelBase, IDisposable
     {
         OnPropertyChanged(nameof(Id));
         OnPropertyChanged(nameof(Cost));
+        OnPropertyChanged(nameof(Name));
+        OnPropertyChanged(nameof(Description));
         OnPropertyChanged(nameof(Icon));
         OnPropertyChanged(nameof(Position));
         OnPropertyChanged(nameof(Prerequisites));

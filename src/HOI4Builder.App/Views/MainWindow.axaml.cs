@@ -1,19 +1,72 @@
 using System;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 using Avalonia.Input;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Platform.Storage;
 using HOI4Builder.App.ViewModels;
 using HOI4Builder.Core.Projects;
+using Tmds.DBus.Protocol;
 
 namespace HOI4Builder.App.Views;
 
 public partial class MainWindow : Window
 {
     private bool _closeConfirmed;
+    
     public MainWindow() => InitializeComponent();
+    private async void OnExportMod(object? sender, RoutedEventArgs e) => await ExportAsync(askForFolder: false);
+    private async void OnExportModTo(object? sender, RoutedEventArgs e) => await ExportAsync(askForFolder: true);
+    private async Task ExportAsync(bool askForFolder)
+    {
+        if (DataContext is not MainViewModel vm || vm.Project is not { } project)
+            return;
+        
+        if (askForFolder || string.IsNullOrWhiteSpace(project.ExportFolder))
+        {
+            var folders = await StorageProvider.OpenFolderPickerAsync(new FolderPickerOpenOptions
+            {
+                Title = "Choose the export folder (usually the game's local mod folder)",
+                AllowMultiple = false,
+            });
+
+            var path = folders.Count > 0 ? folders[0].TryGetLocalPath() : null;
+            if (path is null)
+                return;
+
+            project.ExportFolder = path;
+
+            try
+            {
+                var result = ModExporter.Export(project);
+                vm.StatusText = $"Exported to {result.ModFolder}: {result.Written.Count} written, {result.Unchanged} unchanged";
+
+                var lines = new List<string>
+                {
+                    $"Mod folder: {result.ModFolder}",
+                    "",
+                    result.Written.Count == 0 ? "No files changed." : "Written:",
+                };
+                lines.AddRange(result.Written.Select(file => " " + file));
+
+                if (result.Warnings.Count > 0)
+                {
+                    lines.Add("");
+                    lines.Add("Warnings:");
+                    lines.AddRange(result.Warnings.Select(warning => " " + warning));
+                }
+
+                await new MessageDialog("Export finished", string.Join("\n", lines)).ShowDialog(this);
+            }
+            catch (Exception ex) when (ex is InvalidOperationException or InvalidDataException)
+            {
+                await new MessageDialog("Export failed", ex.Message).ShowDialog(this);
+            }
+        }
+    }
 
     private async Task<bool> ConfirmDiscardAsync()
     {
@@ -96,7 +149,7 @@ public partial class MainWindow : Window
 
     private async void OnSaveAs(object? sender, RoutedEventArgs e) => await SaveAsync(forcePicker: true);
 
-    private async Task<bool> SaveAsync(bool forcePicker)
+    public async Task<bool> SaveAsync(bool forcePicker)
     {
         if (DataContext is not MainViewModel vm || vm.Project is not { } project)
             return false;

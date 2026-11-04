@@ -1,6 +1,7 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:HOI4Builder.App.ViewModels"
+        xmlns:views="using:HOI4Builder.App.Views"
         x:Class="HOI4Builder.App.Views.MainWindow"
         x:DataType="vm:MainViewModel"
         Width="1280" Height="800"
@@ -22,7 +23,8 @@
                 <Separator />
                 <MenuItem Header="_Save" Click="OnSave" InputGesture="Ctrl+S" IsEnabled="{Binding HasProject}" />
                 <MenuItem Header="Save _as..." Click="OnSaveAs" InputGesture="Ctrl+Shift+S" IsEnabled="{Binding HasProject}" />
-                <MenuItem Header="_Export mod" IsEnabled="False" />
+                <MenuItem Header="_Export mod" Click="OnExportMod" IsEnabled="{Binding HasProject}" />
+                <MenuItem Header="Export mod _to..." Click="OnExportModTo" IsEnabled="{Binding HasProject}" />
                 <Separator />
                 <MenuItem Header="_Close project"
                           Click="OnCloseProject"
@@ -38,38 +40,16 @@
         </Menu>
 
         <Border DockPanel.Dock="Bottom" Padding="10,4">
-            <TextBlock Text="{Binding StatusText}" />
+        <TextBlock Text="{Binding StatusText}" />
         </Border>
 
-        <DockPanel DockPanel.Dock="Left" Width="220" IsEnabled="{Binding HasProject}">
-        <StackPanel DockPanel.Dock="Top" Margin="8" Spacing="6">
-            <TextBlock Text="Country" />
-            <ComboBox ItemsSource="{Binding Selection.All}"
-                    SelectedItem="{Binding Selection.Selected}"
-                    HorizontalAlignment="Stretch" />
-            <TextBox Text="{Binding Selection.NewTag}" PlaceholderText="Tag (e.g. GER)" />
-            <TextBox Text="{Binding Selection.NewName}" PlaceholderText="Name (optional)" />
-            <Button Content="Add country"
-                    Command="{Binding Selection.AddCountryCommand}"
-                    HorizontalAlignment="Stretch" />
-            <TextBlock Text="{Binding Selection.AddError}"
-                    IsVisible="{Binding Selection.HasAddError}"
-                    Foreground="#e5534b"
-                    TextWrapping="Wrap" />
-        </StackPanel>
-        <ListBox ItemsSource="{Binding Editors}"
-                SelectedItem="{Binding SelectedEditor}">
-            <ListBox.ItemTemplate>
-                <DataTemplate x:DataType="vm:EditorEntry">
-                    <TextBlock Text="{Binding Title}" Margin="6,4" />
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
-        </DockPanel>
+        <views:SidebarView DockPanel.Dock="Left" Width="280" />
 
         <Grid>
-            <ContentControl Content="{Binding SelectedEditor.ViewModel}"
-                            IsVisible="{Binding HasProject}" />
+            <ContentControl Content="{Binding SelectedPage.ViewModel}"
+                            IsVisible="{Binding !ShowStartScreen}"
+                            HorizontalContentAlignment="Stretch"
+                            VerticalContentAlignment="Stretch" />
 
             <StackPanel IsVisible="{Binding ShowStartScreen}"
                         HorizontalAlignment="Center"

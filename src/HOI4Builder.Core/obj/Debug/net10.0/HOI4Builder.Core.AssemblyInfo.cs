@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("HOI4Builder.Core")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c7134a1b9d6401b55d8539c44eeea4f5c64f3622")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a82917a785a0d5918f39fead0a8b66ae59b16465")]
 [assembly: System.Reflection.AssemblyProductAttribute("HOI4Builder.Core")]
 [assembly: System.Reflection.AssemblyTitleAttribute("HOI4Builder.Core")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

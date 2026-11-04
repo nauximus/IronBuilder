@@ -88,6 +88,7 @@ public static class ModImporter
                 
                 if (skipped.Count > 0)
                 {
+                    project.ProtectedFiles.Add(relative);
                     warnings.Add(
                         $"{relative}: {skipped.Count} top-level entries other than focus_tree" +
                         $"({string.Join(", ", skipped.Distinct())}) were not imported.");

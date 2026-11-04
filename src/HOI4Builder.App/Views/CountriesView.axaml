@@ -1,0 +1,84 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:HOI4Builder.App.ViewModels"
+             x:Class="HOI4Builder.App.Views.CountriesView"
+             x:DataType="vm:CountriesViewModel">
+
+    <Grid ColumnDefinitions="280,*">
+
+        <!-- Country list, add form and remove -->
+        <DockPanel Grid.Column="0" Margin="12">
+            <TextBlock DockPanel.Dock="Top"
+                       Text="Countries"
+                       FontSize="18"
+                       FontWeight="Bold"
+                       Margin="0,0,0,8" />
+
+            <StackPanel DockPanel.Dock="Bottom" Spacing="6" Margin="0,10,0,0">
+                <TextBlock Text="Add country" FontWeight="Bold" />
+                <TextBox Text="{Binding Selection.NewTag}" PlaceholderText="Tag (e.g. GER)" />
+                <TextBox Text="{Binding Selection.NewName}" PlaceholderText="Name (optional)" />
+                <Button Content="Add country"
+                        Command="{Binding Selection.AddCountryCommand}"
+                        HorizontalAlignment="Stretch"
+                        HorizontalContentAlignment="Center" />
+                <TextBlock Text="{Binding Selection.AddError}"
+                           IsVisible="{Binding Selection.HasAddError}"
+                           Foreground="#e5534b"
+                           TextWrapping="Wrap" />
+
+                <Button Content="Remove selected country"
+                        Command="{Binding RemoveCountryCommand}"
+                        HorizontalAlignment="Stretch"
+                        HorizontalContentAlignment="Center"
+                        Margin="0,8,0,0" />
+                <TextBlock Text="{Binding RemoveError}"
+                           IsVisible="{Binding HasRemoveError}"
+                           Foreground="#e5534b"
+                           TextWrapping="Wrap" />
+            </StackPanel>
+
+            <ListBox ItemsSource="{Binding Selection.All}"
+                     SelectedItem="{Binding Selection.Selected}" />
+        </DockPanel>
+
+        <!-- Editor for the selected country -->
+        <Grid Grid.Column="1" Margin="0,12,12,12">
+            <TabControl IsVisible="{Binding HasSelection}" FontSize="14">
+                <TabItem Header="Basics">
+                    <TextBlock Text="Coming in the next step." Margin="12" Opacity="0.6" />
+                </TabItem>
+                <TabItem Header="Government">
+                    <TextBlock Text="Coming soon." Margin="12" Opacity="0.6" />
+                </TabItem>
+                <TabItem Header="Parties">
+                    <TextBlock Text="Coming soon." Margin="12" Opacity="0.6" />
+                </TabItem>
+                <TabItem Header="Stats">
+                    <TextBlock Text="Coming soon." Margin="12" Opacity="0.6" />
+                </TabItem>
+                <TabItem Header="Subjects">
+                    <TextBlock Text="Coming soon." Margin="12" Opacity="0.6" />
+                </TabItem>
+                <TabItem Header="Setup">
+                    <TextBlock Text="Coming soon." Margin="12" Opacity="0.6" />
+                </TabItem>
+                <TabItem Header="Names &amp; identities">
+                    <TextBlock Text="Coming soon." Margin="12" Opacity="0.6" />
+                </TabItem>
+                <TabItem Header="History">
+                    <TextBlock Text="Coming soon." Margin="12" Opacity="0.6" />
+                </TabItem>
+                <TabItem Header="Appearance">
+                    <TextBlock Text="Coming soon." Margin="12" Opacity="0.6" />
+                </TabItem>
+            </TabControl>
+
+            <TextBlock Text="Add or select a country to edit it."
+                       IsVisible="{Binding !HasSelection}"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
+                       Opacity="0.6" />
+        </Grid>
+    </Grid>
+</UserControl>

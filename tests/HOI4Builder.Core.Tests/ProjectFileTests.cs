@@ -31,6 +31,9 @@ public sealed class ProjectFileTests : IDisposable
         tree.SourceFile = "common/national_focus/t.txt";
         project.FocusTrees.Add(tree);
 
+        tree.Focuses[0].Name = "Alpha";
+        project.ProtectedFiles.Add("common/national_focus/x.txt");
+
         return project;
     }
 
@@ -54,6 +57,8 @@ public sealed class ProjectFileTests : IDisposable
         Assert.Equal(1, focus.X);
         Assert.Equal(2, focus.Y);
         Assert.Equal("cancel_if_invalid", Assert.Single(focus.ExtraEntries).Key);
+        Assert.Equal("Alpha", focus.Name);
+        Assert.Contains("common/national_focus/x.txt", loaded.ProtectedFiles);
     }
 
     [Fact]
@@ -119,5 +124,98 @@ public sealed class ProjectFileTests : IDisposable
     public void An_empty_object_is_not_a_project()
     {
         Assert.Throws<ProjectFileException>(() => ProjectFile.Deserialize("{}"));
+    }
+
+        [Fact]
+    public void Country_details_and_ideologies_round_trip()
+    {
+        var project = Sample();
+        project.Ideologies.Clear();
+        var group = new IdeologyGroup("monarchism");
+        group.SubIdeologies.Add("absolutism");
+        project.Ideologies.Add(group);
+
+        var country = project.FindCountry("TST")!;
+        country.DefinitieName = "the Republic of Testland";
+        country.Adjective = "Testlandic";
+        country.CapitalStateId = 64;
+        country.RulingIdeology = "monarchism";
+        country.InitialLeaderSubIdeology = "absolutism";
+        country.ElectionsAllowed = false;
+        country.ElectionFrequency = 60;
+        country.LastElection = new DateOnly(1936, 1, 1);
+        country.PartyPopularity["monarchism"] = 100;
+        country.PartyNames["monarchism"] = new PartyName { Name = "RP", LongName = "Royal Party" };
+        country.IdeologyNames["monarchism"] = "Royalism";
+        country.Stability = 72.5;
+        country.WarSupport = 15;
+        country.ResearchSlots = 4;
+        country.Convoys = 200;
+        country.Subjects.Add(new SubjectRelation { TargetTag = "SUB", AutonomyType = "autonomy_puppet", FreedomPercent = 30 });
+        country.StartingTechnologies.Add("infantry_weapons");
+        country.StartingLaws.Add("civilian_economy");
+        country.Stockpile["infantry_equipment_1"] = 500;
+        country.CosmeticIdentities.Add(new CosmeticIdentity
+        {
+            Id = "TST_fascist", DisplayName = "Test Reich", FlagFile = "TST_fascist.tga", Color = new Rgb(200, 10, 10)
+        });
+        country.HistoryScript = "1936.1.1 = { }";
+        country.GraphicalCulture = "western_european_gfx";
+        country.GraphicalCulture2d = "western_european_2d";
+        country.MapColor = new Rgb(10, 20, 30);
+
+        var loaded = ProjectFile.Deserialize(ProjectFile.Serialize(project));
+
+        var ideology = Assert.Single(loaded.Ideologies);
+        Assert.Equal("monarchism", ideology.Id);
+        Assert.Equal("absolutism", Assert.Single(ideology.SubIdeologies));
+
+        var c = loaded.FindCountry("TST")!;
+        Assert.Equal("the Republic of Testland", c.DefinitieName);
+        Assert.Equal("Testlandic", c.Adjective);
+        Assert.Equal(64, c.CapitalStateId);
+        Assert.Equal("monarchism", c.RulingIdeology);
+        Assert.Equal("absolutism", c.InitialLeaderSubIdeology);
+        Assert.False(c.ElectionsAllowed);
+        Assert.Equal(60, c.ElectionFrequency);
+        Assert.Equal(new DateOnly(1936, 1, 1), c.LastElection);
+        Assert.Equal(100, c.PartyPopularity["monarchism"]);
+        Assert.Equal("Royal Party", c.PartyNames["monarchism"].LongName);
+        Assert.Equal("Royalism", c.IdeologyNames["monarchism"]);
+        Assert.Equal(72.5, c.Stability);
+        Assert.Equal(15, c.WarSupport);
+        Assert.Equal(4, c.ResearchSlots);
+        Assert.Equal(200, c.Convoys);
+        var subject = Assert.Single(c.Subjects);
+        Assert.Equal("SUB", subject.TargetTag);
+        Assert.Equal("autonomy_puppet", subject.AutonomyType);
+        Assert.Equal(30, subject.FreedomPercent);
+        Assert.Equal("infantry_weapons", Assert.Single(c.StartingTechnologies));
+        Assert.Equal("civilian_economy", Assert.Single(c.StartingLaws));
+        Assert.Equal(500, c.Stockpile["infantry_equipment_1"]);
+        var identity = Assert.Single(c.CosmeticIdentities);
+        Assert.Equal("Test Reich", identity.DisplayName);
+        Assert.Equal(new Rgb(200, 10, 10), identity.Color);
+        Assert.Equal("1936.1.1 = { }", c.HistoryScript);
+        Assert.Equal("western_european_gfx", c.GraphicalCulture);
+        Assert.Equal("western_european_2d", c.GraphicalCulture2d);
+        Assert.Equal(new Rgb(10, 20, 30), c.MapColor);
+    }
+
+    [Fact]
+    public void Older_files_get_the_vanilla_ideologies_and_country_defaults()
+    {
+        var project = ProjectFile.Deserialize(
+            "{ \"FormatVersion\": 1, \"Name\": \"x\", \"ModId\": \"x\", \"GameVersion\": \"1.19.*\"," +
+            " \"Countries\": [ { \"Tag\": \"OLD\", \"Name\": \"Oldland\" } ] }");
+
+        Assert.Equal(
+            new[] { "democratic", "communism", "fascism", "neutrality" },
+            project.Ideologies.Select(i => i.Id));
+
+        var c = project.FindCountry("OLD")!;
+        Assert.Equal(3, c.ResearchSlots);
+        Assert.Equal(48, c.ElectionFrequency);
+        Assert.True(c.ElectionsAllowed);
     }
 }

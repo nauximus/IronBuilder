@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "xiehaaTbzpk=",
+  "dgSpecHash": "7PMJ1xZtUSU=",
   "success": true,
   "projectFilePath": "/mnt/Depo/HOI4ModBuilder/tests/HOI4Builder.Core.Tests/HOI4Builder.Core.Tests.csproj",
   "expectedPackageFiles": [
@@ -18,7 +18,7 @@
     "/home/naux/.nuget/packages/xunit.extensibility.core/2.9.3/xunit.extensibility.core.2.9.3.nupkg.sha512",
     "/home/naux/.nuget/packages/xunit.extensibility.execution/2.9.3/xunit.extensibility.execution.2.9.3.nupkg.sha512",
     "/home/naux/.nuget/packages/xunit.runner.visualstudio/3.1.4/xunit.runner.visualstudio.3.1.4.nupkg.sha512",
-    "/home/naux/.nuget/packages/microsoft.aspnetcore.app.ref/10.0.13/microsoft.aspnetcore.app.ref.10.0.13.nupkg.sha512"
+    "/home/naux/.nuget/packages/microsoft.aspnetcore.app.ref/10.0.14/microsoft.aspnetcore.app.ref.10.0.14.nupkg.sha512"
   ],
   "logs": []
 }

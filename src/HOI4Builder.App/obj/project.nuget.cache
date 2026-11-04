@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "q93LhIrZBtI=",
+  "dgSpecHash": "VWYJmyoGGzk=",
   "success": true,
   "projectFilePath": "/mnt/Depo/HOI4ModBuilder/src/HOI4Builder.App/HOI4Builder.App.csproj",
   "expectedPackageFiles": [
@@ -35,7 +35,7 @@
     "/home/naux/.nuget/packages/skiasharp.nativeassets.webassembly/3.119.4/skiasharp.nativeassets.webassembly.3.119.4.nupkg.sha512",
     "/home/naux/.nuget/packages/skiasharp.nativeassets.win32/3.119.4/skiasharp.nativeassets.win32.3.119.4.nupkg.sha512",
     "/home/naux/.nuget/packages/tmds.dbus.protocol/0.94.1/tmds.dbus.protocol.0.94.1.nupkg.sha512",
-    "/home/naux/.nuget/packages/microsoft.aspnetcore.app.ref/10.0.13/microsoft.aspnetcore.app.ref.10.0.13.nupkg.sha512"
+    "/home/naux/.nuget/packages/microsoft.aspnetcore.app.ref/10.0.14/microsoft.aspnetcore.app.ref.10.0.14.nupkg.sha512"
   ],
   "logs": []
 }

@@ -59,6 +59,14 @@
                                 <TextBox Text="{Binding Icon}" PlaceholderText="GFX_..." />
                             </StackPanel>
                             <StackPanel Spacing="4">
+                                <TextBlock Text="Name (shown in game)" />
+                                <TextBox Text="{Binding Name}" />
+                        </StackPanel>
+                            <StackPanel Spacing="4">
+                                <TextBlock Text="Description" />
+                                <TextBox Text="{Binding Description}" AcceptsReturn="True" TextWrapping="Wrap" MinHeight="80" />
+                            </StackPanel>
+                            <StackPanel Spacing="4">
                                 <TextBlock Text="Requires" />
                                 <TextBlock Text="{Binding Prerequisites}" Opacity="0.7" TextWrapping="Wrap" />
                             </StackPanel>

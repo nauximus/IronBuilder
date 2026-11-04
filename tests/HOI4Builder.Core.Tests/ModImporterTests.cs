@@ -86,6 +86,7 @@ public sealed class ModImporterTests : IDisposable
 
         Assert.Single(result.Project.FocusTrees);
         Assert.Contains(result.Warnings, w => w.Contains("mixed.txt") && w.Contains("shared_focus"));
+        Assert.Contains("common/national_focus/mixed.txt", result.Project.ProtectedFiles);
     }
 
     [Fact]

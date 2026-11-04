@@ -1,4 +1,3 @@
-using System.Security.Cryptography.X509Certificates;
 using HOI4Builder.Core.Editing;
 using HOI4Builder.Core.Focuses;
 
@@ -21,11 +20,19 @@ public sealed class ModProject
 
     public List<Country> Countries { get; } = new();
 
+    public List<IdeologyGroup> Ideologies { get; } = IdeologyGroup.CreateVanilla();
+
+    public IdeologyGroup? FindIdeology(string id) => Ideologies.FirstOrDefault(i => i.Id == id);
+
+    public IEnumerable<string> AllSubIdeologies() => Ideologies.SelectMany(i => i.SubIdeologies);
+    
     public Country? FindCountry(string tag) => Countries.FirstOrDefault(c => c.Tag == tag);
 
     public IEnumerable<FocusTree> TreesFor(string tag) => FocusTrees.Where(t => t.CountryTag == tag);
 
     public List<FocusTree> UnassignedTrees() => FocusTrees.Where(t => t.CountryTag is null).ToList();
+
+    public HashSet<string> ProtectedFiles { get; } = new();
 
     public UndoStack History { get; } = new();
 
