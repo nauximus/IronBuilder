@@ -43,7 +43,7 @@
         <TextBlock Text="{Binding StatusText}" />
         </Border>
 
-        <views:SidebarView DockPanel.Dock="Left" Width="280" />
+        <views:SidebarView DockPanel.Dock="Left" Width="220" />
 
         <Grid>
             <ContentControl Content="{Binding SelectedPage.ViewModel}"

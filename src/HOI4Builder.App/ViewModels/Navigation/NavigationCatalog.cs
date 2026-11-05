@@ -15,7 +15,9 @@ public static class NavigationCatalog
             {
                 new NavSection("Project", new[]
                 {
-                    Placeholder("overview", "Overview", "Project setup - status"),
+                    project is null
+                        ? Placeholder("overview", "Overview", "Project setup - status")
+                        : new NavPage("overview", "Overview", "Project setup - status", new OverviewViewModel(project)),
                     Placeholder("planning", "Planning", "Project boards, notes"),
                     Placeholder("gameplay-connections", "Gameplay connections", "Activations, requirements & missing links"),
                     Placeholder("debug-tool", "Debug", "Live testing, logs & help"),

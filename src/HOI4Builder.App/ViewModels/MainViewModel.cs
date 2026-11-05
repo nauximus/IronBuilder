@@ -99,11 +99,10 @@ public partial class MainViewModel : ViewModelBase
             Modes = NavigationCatalog.Build(newValue, Selection);
             SelectedMode = Modes[0];
 
-            // Open on the Focus tree for now; change to "overview" once that page exists.
             SelectedPage = Modes
                 .SelectMany(m => m.Sections)
                 .SelectMany(s => s.Pages)
-                .First(p => p.Id == "focus-tree");
+                .First(p => p.Id == "overview");
 
             StatusText = "Ready";
         }

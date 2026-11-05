@@ -1,0 +1,191 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:HOI4Builder.App.ViewModels"
+             x:Class="HOI4Builder.App.Views.OverviewView"
+             x:DataType="vm:OverviewViewModel">
+
+    <UserControl.Styles>
+        <Style Selector="TextBlock.section">
+            <Setter Property="FontSize" Value="16" />
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="Margin" Value="0,0,0,4" />
+        </Style>
+        <Style Selector="Border.card">
+            <Setter Property="Background" Value="{DynamicResource CardBackgroundFillColorDefaultBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource CardStrokeColorDefaultBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="8" />
+            <Setter Property="Padding" Value="16" />
+        </Style>
+        <Style Selector="Border.status">
+            <Setter Property="CornerRadius" Value="6" />
+            <Setter Property="Padding" Value="12,8" />
+            <Setter Property="Background" Value="#555555" />
+        </Style>
+        <Style Selector="Border.status.ready">
+            <Setter Property="Background" Value="#2e7d32" />
+        </Style>
+        <Style Selector="Border.status.warnings">
+            <Setter Property="Background" Value="#b26a00" />
+        </Style>
+        <Style Selector="Border.status.blocked">
+            <Setter Property="Background" Value="#b3261e" />
+        </Style>
+    </UserControl.Styles>
+
+    <ScrollViewer>
+        <StackPanel Margin="24" Spacing="20">
+
+            <TextBlock Text="Overview" FontSize="24" FontWeight="Bold" />
+
+            <!-- Content counters -->
+            <ItemsControl ItemsSource="{Binding Counters}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate x:DataType="vm:CounterItem">
+                        <Border Classes="card" Width="150" Margin="0,0,12,12">
+                            <StackPanel>
+                                <TextBlock Text="{Binding Count}" FontSize="28" FontWeight="Bold" />
+                                <TextBlock Text="{Binding Label}" Opacity="0.7" />
+                            </StackPanel>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+            <Grid ColumnDefinitions="2*,16,*">
+
+                <!-- Project settings -->
+                <Border Grid.Column="0" Classes="card" VerticalAlignment="Top">
+                    <StackPanel Spacing="8">
+                        <TextBlock Classes="section" Text="Project settings" />
+
+                        <TextBlock Text="Mod name" />
+                        <TextBox Text="{Binding ModName, UpdateSourceTrigger=LostFocus}" />
+
+                        <TextBlock Text="Mod id" />
+                        <TextBox Text="{Binding ModId, UpdateSourceTrigger=LostFocus}" />
+                        <TextBlock Text="{Binding ModIdError}"
+                                   IsVisible="{Binding HasModIdError}"
+                                   Foreground="#e5534b"
+                                   TextWrapping="Wrap" />
+
+                        <TextBlock Text="Game compatibility (game version)" />
+                        <TextBox Text="{Binding GameVersion, UpdateSourceTrigger=LostFocus}"
+                                 PlaceholderText="e.g. 1.19.*" />
+
+                        <TextBlock Text="Export folder" />
+                        <Grid ColumnDefinitions="*,8,Auto">
+                            <TextBox Grid.Column="0" Text="{Binding ExportFolder, UpdateSourceTrigger=LostFocus}" />
+                            <Button Grid.Column="2" Content="Browse..." Click="OnBrowseExport" />
+                        </Grid>
+
+                        <TextBlock Text="HOI4 install folder" />
+                        <Grid ColumnDefinitions="*,8,Auto">
+                            <TextBox Grid.Column="0" Text="{Binding Hoi4InstallFolder, UpdateSourceTrigger=LostFocus}" />
+                            <Button Grid.Column="2" Content="Browse..." Click="OnBrowseInstall" />
+                        </Grid>
+
+                        <TextBlock Text="Imported mod folder" />
+                        <Grid ColumnDefinitions="*,8,Auto">
+                            <TextBox Grid.Column="0" Text="{Binding ImportedModFolder, UpdateSourceTrigger=LostFocus}" />
+                            <Button Grid.Column="2" Content="Browse..." Click="OnBrowseImported" />
+                        </Grid>
+
+                        <ToggleSwitch Margin="0,6,0,0"
+                                      IsChecked="{Binding IsSubmod}"
+                                      OnContent="This project is a submod"
+                                      OffContent="This project is a standalone mod" />
+
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <Button Content="Edit launcher descriptor"
+                                    Tag="Launcher descriptor editor"
+                                    Click="OnNotBuilt" />
+                            <Button Content="Reset advanced metadata"
+                                    Command="{Binding ResetAdvancedMetadataCommand}" />
+                        </StackPanel>
+
+                        <Separator Margin="0,8" />
+
+                        <TextBlock Text="World mode" />
+                        <ComboBox HorizontalAlignment="Stretch"
+                                  ItemsSource="{Binding WorldModes}"
+                                  SelectedItem="{Binding SelectedWorldMode}">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate x:DataType="vm:WorldModeOption">
+                                    <TextBlock Text="{Binding Title}" />
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+                        <TextBlock Text="{Binding SelectedWorldMode.Description}"
+                                   Opacity="0.7"
+                                   TextWrapping="Wrap" />
+
+                        <StackPanel Orientation="Horizontal" Spacing="8"
+                                    IsVisible="{Binding IsRandomizedWorld}">
+                            <Button Content="Preview" Tag="Randomized world preview" Click="OnNotBuilt" />
+                            <Button Content="Apply" Tag="Randomized world apply" Click="OnNotBuilt" />
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
+                <!-- Project health -->
+                <Border Grid.Column="2" Classes="card" VerticalAlignment="Top">
+                    <StackPanel Spacing="12">
+                        <TextBlock Classes="section" Text="Project health" />
+
+                        <Border Classes="status"
+                                Classes.ready="{Binding IsReady}"
+                                Classes.warnings="{Binding HasWarnings}"
+                                Classes.blocked="{Binding IsBlocked}">
+                            <TextBlock Text="{Binding StatusText}"
+                                       FontWeight="Bold"
+                                       Foreground="White"
+                                       TextWrapping="Wrap" />
+                        </Border>
+
+                        <Grid ColumnDefinitions="*,*">
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="{Binding WarningCount}" FontSize="24" FontWeight="Bold" />
+                                <TextBlock Text="Warnings" Opacity="0.7" />
+                            </StackPanel>
+                            <StackPanel Grid.Column="1">
+                                <TextBlock Text="{Binding AuthoredItemCount}" FontSize="24" FontWeight="Bold" />
+                                <TextBlock Text="Authored items" Opacity="0.7" />
+                            </StackPanel>
+                        </Grid>
+
+                        <Button Content="Review validation"
+                                Command="{Binding ReviewValidationCommand}"
+                                HorizontalAlignment="Stretch"
+                                HorizontalContentAlignment="Center" />
+
+                        <ItemsControl ItemsSource="{Binding Issues}" IsVisible="{Binding ShowIssues}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate x:DataType="x:String">
+                                    <TextBlock Text="{Binding}" TextWrapping="Wrap" Margin="0,0,0,4" />
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+
+                        <Button Content="Project checkpoints"
+                                Tag="Project checkpoints"
+                                Click="OnNotBuilt"
+                                HorizontalAlignment="Stretch"
+                                HorizontalContentAlignment="Center" />
+                        <Button Content="Where this is used"
+                                Tag="Where this is used"
+                                Click="OnNotBuilt"
+                                HorizontalAlignment="Stretch"
+                                HorizontalContentAlignment="Center" />
+                    </StackPanel>
+                </Border>
+
+            </Grid>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

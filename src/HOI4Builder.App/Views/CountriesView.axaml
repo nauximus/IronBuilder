@@ -45,31 +45,31 @@
         <!-- Editor for the selected country -->
         <Grid Grid.Column="1" Margin="0,12,12,12">
             <TabControl IsVisible="{Binding HasSelection}" FontSize="14">
-                <TabItem Header="Basics">
+                <TabItem Header="Basics" FontSize="18">
                     <TextBlock Text="Coming in the next step." Margin="12" Opacity="0.6" />
                 </TabItem>
-                <TabItem Header="Government">
+                <TabItem Header="Government" FontSize="18">
                     <TextBlock Text="Coming soon." Margin="12" Opacity="0.6" />
                 </TabItem>
-                <TabItem Header="Parties">
+                <TabItem Header="Parties" FontSize="18">
                     <TextBlock Text="Coming soon." Margin="12" Opacity="0.6" />
                 </TabItem>
-                <TabItem Header="Stats">
+                <TabItem Header="Stats" FontSize="18">
                     <TextBlock Text="Coming soon." Margin="12" Opacity="0.6" />
                 </TabItem>
-                <TabItem Header="Subjects">
+                <TabItem Header="Subjects" FontSize="18">
                     <TextBlock Text="Coming soon." Margin="12" Opacity="0.6" />
                 </TabItem>
-                <TabItem Header="Setup">
+                <TabItem Header="Setup" FontSize="18">
                     <TextBlock Text="Coming soon." Margin="12" Opacity="0.6" />
                 </TabItem>
-                <TabItem Header="Names &amp; identities">
+                <TabItem Header="Names &amp; identities" FontSize="18">
                     <TextBlock Text="Coming soon." Margin="12" Opacity="0.6" />
                 </TabItem>
-                <TabItem Header="History">
+                <TabItem Header="History" FontSize="18">
                     <TextBlock Text="Coming soon." Margin="12" Opacity="0.6" />
                 </TabItem>
-                <TabItem Header="Appearance">
+                <TabItem Header="Appearance" FontSize="18">
                     <TextBlock Text="Coming soon." Margin="12" Opacity="0.6" />
                 </TabItem>
             </TabControl>

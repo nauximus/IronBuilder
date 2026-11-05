@@ -14,6 +14,9 @@ public sealed class ModProject
     public string? FilePath { get; set; }
     public string? ModVersion { get; set; }
     public string? ImportFromFolder { get; set; }
+    public string? GameInstallFolder { get; set; }
+    public bool isSubmod { get; set; }
+    public WorldMode WorldMode { get; set; } = WorldMode.StandardMod;
     public List<string> Tags { get; } = new();
 
     public List<FocusTree> FocusTrees { get; } = new();

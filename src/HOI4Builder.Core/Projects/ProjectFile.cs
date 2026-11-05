@@ -30,6 +30,9 @@ internal sealed class ProjectDto
     public string? ModVersion { get; set; }
     public string? ExportFolder { get; set; }
     public string? ImportFromFolder { get; set; }
+    public string? GameInstallFolder { get; set; }
+    public bool isSubmod { get; set; }
+    public WorldMode WorldMode { get; set; } = WorldMode.StandardMod;
     public List<string>? Tags { get; set; }
     public List<CountryDto>? Countries { get; set; }
     public List<IdeologyDto>? Ideologies { get; set; }
@@ -111,6 +114,9 @@ public static class ProjectFile
             ModVersion = project.ModVersion,
             ExportFolder = project.ExportFolder,
             ImportFromFolder = project.ImportFromFolder,
+            GameInstallFolder = project.GameInstallFolder,
+            isSubmod = project.isSubmod,
+            WorldMode = project.WorldMode,
             Tags = new List<string>(project.Tags),
             Ideologies = project.Ideologies.Select(i => new IdeologyDto { Id = i.Id, SubIdeologies = new List<string>(i.SubIdeologies) }).ToList(),
             Countries = project.Countries.Select(ToDto).ToList(),
@@ -164,6 +170,9 @@ public static class ProjectFile
             ModVersion = dto.ModVersion,
             ExportFolder = dto.ExportFolder,
             ImportFromFolder = dto.ImportFromFolder,
+            GameInstallFolder = dto.GameInstallFolder,
+            isSubmod = dto.isSubmod,
+            WorldMode = dto.WorldMode,
         };
 
         project.Tags.AddRange(dto.Tags ?? new List<string>());
